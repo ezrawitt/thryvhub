@@ -1,0 +1,16 @@
+.loginGate{min-height:100vh;display:grid;place-items:center;padding:32px;background:radial-gradient(circle at 50% 0,#fff3ee 0,transparent 38%),#f7f8fa;color:#252a34}
+.loginGate>section{width:min(100%,430px);padding:42px;border:1px solid #e3e6eb;border-radius:18px;background:#fff;box-shadow:0 24px 70px rgba(31,38,49,.12)}
+.loginGate img{display:block;width:112px;height:auto;margin-bottom:34px}
+.loginGate>section>span{font-size:11px;font-weight:800;letter-spacing:.14em;color:#d95731}
+.loginGate h1{margin:10px 0 8px;font-size:34px;line-height:1.1}
+.loginGate p{margin:0 0 28px;color:#68707d}
+.loginGate form{display:grid;gap:10px}
+.loginGate label{font-size:13px;font-weight:700}
+.loginGate input{height:46px;padding:0 14px;border:1px solid #cbd0d8;border-radius:8px;font:inherit;outline:none}
+.loginGate input:focus{border-color:#ef6237;box-shadow:0 0 0 3px rgba(239,98,55,.14)}
+.loginGate input[aria-invalid="true"]{border-color:#c93838}
+.loginGate small{color:#b52e2e}
+.loginGate button{height:46px;margin-top:8px;border:0;border-radius:8px;background:#ef6237;color:white;font:inherit;font-weight:800;cursor:pointer}
+.loginGate button:hover{background:#dc532c}
+.loginGate footer{margin-top:26px;padding-top:20px;border-top:1px solid #edf0f3;font-size:12px;color:#8a919d;text-align:center}
+@media(max-width:520px){.loginGate{padding:18px}.loginGate>section{padding:30px 24px}}
