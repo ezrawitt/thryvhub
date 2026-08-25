@@ -1,3 +1,4 @@
+# Builds the Vite application before publishing it to GitHub Pages.
 name: Deploy to GitHub Pages
 
 on:
