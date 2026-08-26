@@ -2,4 +2,4 @@
 .homeTitle .demoToolsTrigger{width:34px;min-width:34px;height:34px;margin:0;padding:0;justify-content:center;border-color:transparent;background:transparent;color:#89929d;cursor:pointer}
 .homeTitle .demoToolsTrigger:hover,.homeTitle .demoToolsTrigger[aria-expanded=true]{border-color:#d7dce3;background:#f5f7f9;color:#4f657b}
 .homeTitle .demoToolsTrigger svg{width:16px}
-@media(max-width:700px){.homeTitleActions{gap:4px}.homeTitleActions .demoDataStamp{display:none}.homeTitle .dateRangeButton{padding:0 9px}.homeTitle .demoToolsTrigger{min-width:44px;width:44px}}
+@media(max-width:700px){.homeTitleActions{gap:4px}.homeTitle .dateRangeButton{padding:0 9px}.homeTitle .demoToolsTrigger{min-width:44px;width:44px}}

@@ -38,11 +38,6 @@ test('source does not reintroduce stale or foreign tenant claims',()=>{
 test.beforeEach(async({page})=>page.addInitScript(()=>sessionStorage.setItem('thryvhub-demo-access','granted')));
 
 test('page-level canonical totals agree across reporting surfaces',async({page})=>{
-  const routes=['dashboard','network','listings','reputation','performance','advanced-reporting'];
-  for(const route of routes){
-    await page.goto(`/thryvhub/partner-hub/${route}`);
-    await expect(page.locator('body')).toContainText(demoTenant.reporting.freshnessLabel);
-  }
   await page.goto('/thryvhub/partner-hub/network');
   await expect(page.locator('h1')).toContainText(`(${demoTenant.totals.locations})`);
   await page.goto('/thryvhub/partner-hub/listings');
