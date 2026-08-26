@@ -40,6 +40,19 @@ test('demo tools uses an icon-only header control beside the date range',async({
   await expect(page.locator('.demoToolsTrigger')).toHaveAttribute('aria-expanded','true');
 });
 
+test('product widgets retain product styling and persist a custom order',async({page})=>{
+  await page.goto(`${base}dashboard`);
+  await expect(page.locator('.networkHealth')).toBeVisible();
+  const widgets=page.locator('.productWidget');
+  await expect(widgets).toHaveCount(6);
+  await expect(widgets.first()).toContainText('Thryv Growth Platform');
+  expect(await widgets.first().evaluate(widget=>getComputedStyle(widget).borderLeftColor)).toBe('rgb(40, 117, 191)');
+  await page.getByRole('button',{name:'Move Thryv Growth Platform widget later'}).click();
+  await expect(widgets.first()).toContainText('Business Center');
+  await page.reload();
+  await expect(widgets.first()).toContainText('Business Center');
+});
+
 test('normal navigation and Back/Forward preserve the route',async({page})=>{
   const consoleErrors=[];
   page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text())});
