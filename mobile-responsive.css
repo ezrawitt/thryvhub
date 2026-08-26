@@ -1,0 +1,38 @@
+.mobileMenuButton,.mobileNavScrim,.mobileProductNav{display:none}
+@media(max-width:700px){
+  .mobileMenuButton{display:grid;place-items:center;position:fixed;z-index:18;left:12px;top:11px;width:44px;height:44px;border:1px solid #d9dde2;border-radius:10px;background:#fff;color:#26323d;box-shadow:0 2px 8px #0001}
+  .mobileMenuButton svg{width:22px}
+  .mobileNavScrim{display:block;position:fixed;inset:0;z-index:29;border:0;background:rgba(20,29,38,.38)}
+  .side{z-index:30;width:280px!important;transform:translateX(-102%);box-shadow:12px 0 30px #0002;transition:transform .22s ease}
+  .side.mobileOpen{transform:translateX(0)}
+  .side.mobileOpen span,.side.mobileOpen section label,.side.mobileOpen .brand b{display:flex}
+  .side.mobileOpen section label{display:block}
+  .side.mobileOpen .brand{padding:0 15px}.side.mobileOpen .brand img{max-width:105px}.side.mobileOpen .brand button{margin-left:auto}
+  .side.mobileOpen a{justify-content:flex-start;padding:0 15px;min-height:44px}.side.mobileOpen .profile{padding:8px 12px}.side.mobileOpen .profile svg{display:block}
+  main,.homeDashboard,.networkPerformance,.performance,.tasksPage,.supportPage,.socialPage{margin-left:0!important}
+  main{padding-top:68px}
+  .homeDashboard,.networkPerformance,.performance{padding-top:70px!important}
+  .homeTitle h1{padding-left:48px}
+  .tasksTop,.socialPostWorkspace>header{padding-left:72px}
+  button,a{touch-action:manipulation}
+  .side a,.mobileMenuButton,.homeTitle button,.npFilters button,.locationControls button,.locationControls select{min-height:44px}
+  .thryvAiBubble{right:14px;bottom:76px;width:48px;padding:0;justify-content:center}
+  .thryvAiBubble b{display:none}.thryvAiBubble span{width:32px;height:32px}
+  .globalThryvAI{bottom:8px}
+  .socialPage .thryvAiBubble{bottom:84px}
+  .socialPostWorkspace>footer{left:0;height:auto;min-height:72px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr 1fr}
+  .socialPostWorkspace>footer button{min-height:48px;padding:0 10px}.socialPostWorkspace>footer .submit{width:100%}
+  .channelChoices{display:flex;overflow-x:auto;gap:8px;padding:0 16px 16px;scroll-snap-type:x mandatory}
+  .channelChoices button{flex:0 0 104px;min-height:88px;scroll-snap-align:start}
+  .postPreview{display:block!important}.postPreview>h3{display:none}.postPreview article{min-height:0}
+  .postPreview nav,.previewAccount,.postPreview p,.iceCreamVisual,.previewMeta,.postPreview small{display:none}
+  .postPreview:before{content:"Preview";display:block;padding:15px 20px;background:#fff;border:1px solid #dfe3e6;color:#2477bf;font-weight:700}
+  .socialPostGrid{padding-bottom:95px}
+  .perfTableWrap,.npTableWrap,.tablewrap{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:inset -18px 0 15px -20px #283848}
+  .perfTableWrap:before,.npTableWrap:before,.tablewrap:before{content:"Swipe to see more →";position:sticky;left:10px;display:block;width:max-content;padding:6px 9px;border-radius:12px;background:#edf3f8;color:#52718a;font-size:10px;z-index:2}
+  .growthRollup{width:100%;scroll-snap-type:x mandatory}.growthRollup>div,.growthRollup>span{scroll-snap-align:start}
+  .supportHero{padding:35px 18px}.supportHero label,.supportHero>a{width:100%}.supportSolutions{padding-left:18px;padding-right:18px}
+  .tasksWorkspace{width:calc(100% - 24px)}.checklistItem{align-items:flex-start}.checklistItem>div{min-width:0}.checklistItem strong{font-size:14px}.checklistItem small{line-height:1.35}
+  .mobileProductNav{display:flex;position:sticky;top:0;z-index:2;gap:7px;overflow:auto;margin:0 -12px 14px;padding:9px 12px;background:#fff;border-bottom:1px solid #e6e8eb}
+  .mobileProductNav a{flex:0 0 auto;padding:8px 11px;border-radius:18px;background:#f0f3f5;color:#315f80;text-decoration:none;font-size:12px;font-weight:700}
+}
