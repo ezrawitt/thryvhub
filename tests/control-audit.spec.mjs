@@ -11,10 +11,10 @@ test('every visible enabled button produces an observable result',async({page})=
   test.setTimeout(180_000);
   const silent=[];
   for(const route of pages){
-    await page.goto(base+route);
+    await page.goto(base+route,{waitUntil:'domcontentloaded'});
     const count=await page.locator('button:visible:not(:disabled)').count();
     for(let index=0;index<count;index++){
-      if(index)await page.goto(base+route);
+      if(index)await page.goto(base+route,{waitUntil:'domcontentloaded'});
       const button=page.locator('button:visible:not(:disabled)').nth(index);
       if(!await button.count())continue;
       const label=(await button.getAttribute('aria-label'))||(await button.getAttribute('title'))||(await button.innerText());

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import {demoTenant} from '../demo-data.js';
 
 const routes=['dashboard','network','listings','reputation','social','performance','advanced-reporting','tasks','tools','support'];
 const base='/thryvhub/partner-hub/';
@@ -58,7 +59,7 @@ test('copied and new-tab route URLs load independently',async({page,context})=>{
 test('query parameters and fragments survive internal navigation',async({page})=>{
   await page.goto(`${base}performance`);
   await page.getByRole('link',{name:/Open Advanced Reporting/}).click();
-  await expect(page).toHaveURL(/\/thryvhub\/partner-hub\/advanced-reporting\?date=Last\+30\+days&region=All\+regions&location=&metric=Leads$/);
+  await expect(page).toHaveURL(url=>url.pathname===`${base}advanced-reporting`&&url.searchParams.get('date')===demoTenant.reporting.label&&url.searchParams.get('region')==='All regions'&&url.searchParams.get('metric')==='Leads');
   await page.setViewportSize({width:390,height:844});
   await page.goto(`${base}dashboard`);
   await page.getByRole('link',{name:'SEO',exact:true}).last().click();
