@@ -1,1 +1,1 @@
-{"scripts":{"dev":"vite --host 127.0.0.1","build":"vite build","test:routes":"playwright test tests/routes.spec.mjs"},"dependencies":{"@vitejs/plugin-react":"latest","lucide-react":"latest","react":"latest","react-dom":"latest","vite":"latest"},"devDependencies":{"@playwright/test":"^1.62.1"}}
+{"scripts":{"dev":"vite --host 127.0.0.1","build":"vite build","test:routes":"playwright test"},"dependencies":{"@vitejs/plugin-react":"latest","lucide-react":"latest","react":"latest","react-dom":"latest","vite":"latest"},"devDependencies":{"@playwright/test":"^1.62.1"}}
