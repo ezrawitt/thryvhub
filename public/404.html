@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Opening Partner Hub…</title>
+  </head>
+  <body>
+    <script>
+      (() => {
+        const base = '/thryvhub/';
+        const route = location.pathname + location.search + location.hash;
+        location.replace(base + '?spa-route=' + encodeURIComponent(route));
+      })();
+    </script>
+  </body>
+</html>

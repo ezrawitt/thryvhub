@@ -32,9 +32,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      # GitHub Pages has no SPA rewrite rule. Serving the app as 404.html
-      # allows direct links such as /partner-hub/performance to load correctly.
-      - run: cp dist/index.html dist/404.html
+      # public/404.html redirects deep links to index.html, which restores the
+      # original pathname, query string, and fragment before React starts.
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

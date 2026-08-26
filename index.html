@@ -10,6 +10,13 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (() => {
+        const params = new URLSearchParams(location.search);
+        const restoredRoute = params.get('spa-route');
+        if (restoredRoute) history.replaceState({}, '', restoredRoute);
+      })();
+    </script>
     <script type="module" src="/src.jsx"></script>
   </body>
 </html>
