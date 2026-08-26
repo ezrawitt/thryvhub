@@ -29,6 +29,17 @@ test('all rendered application links retain the deployment base',async({page})=>
   for(const href of hrefs)expect(href).toMatch(/^\/thryvhub\/partner-hub\//);
 });
 
+test('demo tools uses an icon-only header control beside the date range',async({page})=>{
+  await page.goto(`${base}dashboard`);
+  const trigger=page.getByRole('button',{name:'Open demo tools'});
+  await expect(trigger).toBeVisible();
+  expect((await trigger.innerText()).trim()).toBe('');
+  expect(await trigger.evaluate(button=>button.previousElementSibling?.classList.contains('dateRangeButton'))).toBe(true);
+  await trigger.click();
+  await expect(page.getByRole('region',{name:'Demo tools'})).toBeVisible();
+  await expect(page.locator('.demoToolsTrigger')).toHaveAttribute('aria-expanded','true');
+});
+
 test('normal navigation and Back/Forward preserve the route',async({page})=>{
   const consoleErrors=[];
   page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text())});
