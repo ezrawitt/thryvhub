@@ -40,6 +40,13 @@ test('demo tools uses an icon-only header control beside the date range',async({
   await expect(page.locator('.demoToolsTrigger')).toHaveAttribute('aria-expanded','true');
 });
 
+test('locations omits the retired legacy roster',async({page})=>{
+  await page.goto(`${base}network`);
+  await expect(page.getByRole('heading',{name:/Locations/})).toBeVisible();
+  await expect(page.locator('.gpLocations')).toBeVisible();
+  await expect(page.locator('.stats, .locationToolbar, .locationTable')).toHaveCount(0);
+});
+
 test('product metrics render as distinct chart widgets and persist custom layouts',async({page})=>{
   await page.goto(`${base}dashboard`);
   await expect(page.locator('.networkHealth')).toBeVisible();
