@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {demoTenant} from '../demo-data.js';
 
-const routes=['dashboard','network','listings','reputation','social','performance','advanced-reporting','tasks','tools','support'];
+const routes=['dashboard','network','listings','reputation','social','performance','advanced-reporting','tasks','tools','alerts','support'];
 const base='/thryvhub/partner-hub/';
 
 test.beforeEach(async({page})=>{
@@ -45,6 +45,23 @@ test('locations omits the retired legacy roster',async({page})=>{
   await expect(page.getByRole('heading',{name:/Locations/})).toBeVisible();
   await expect(page.locator('.gpLocations')).toBeVisible();
   await expect(page.locator('.stats, .locationToolbar, .locationTable')).toHaveCount(0);
+});
+
+test('cross-product alerts are available below Tools and support triage',async({page})=>{
+  await page.goto(`${base}alerts`);
+  const coaching=page.locator('.side nav section').filter({hasText:'Coaching'});
+  expect(await coaching.locator('a').allTextContents()).toEqual(['Tasks & Checklists','Tools','Alerts']);
+  await expect(page.locator('.alertCard')).toHaveCount(10);
+  for(const product of ['Keap','Thryv Growth Platform','Business Center','SEO','Social Ads','Leads','Listings','Reputation'])await expect(page.getByText(product,{exact:true}).first()).toBeVisible();
+  await page.getByRole('tab',{name:'Critical (3)'}).click();
+  await expect(page.locator('.alertCard')).toHaveCount(3);
+  const firstAlert=page.locator('.alertCard').first();
+  await firstAlert.locator('.alertAction').click();
+  await expect(firstAlert.locator('.alertPreview')).toBeVisible();
+  await firstAlert.locator('.archiveAlert').click();
+  await expect(page.locator('.alertCard')).toHaveCount(2);
+  await page.getByRole('tab',{name:'Archive (2)'}).click();
+  await expect(page.locator('.alertCard')).toHaveCount(2);
 });
 
 test('product metrics render as distinct chart widgets and persist custom layouts',async({page})=>{

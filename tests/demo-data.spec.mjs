@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
-import {demoTenant,demoReviews,demoTransactions,leadChannelRows,leadSourceRows,listingLocations,networkPerformanceRows,validateDemoData} from '../demo-data.js';
+import {demoTenant,demoReviews,demoTransactions,leadChannelRows,leadSourceRows,listingLocations,networkPerformanceRows,crossProductAlerts,validateDemoData} from '../demo-data.js';
 
 const periodStart=new Date(`${demoTenant.reporting.start}T00:00:00-07:00`);
 const periodEnd=new Date(`${demoTenant.reporting.end}T23:59:59-07:00`);
@@ -15,6 +15,8 @@ test('canonical fixture identities, counts, and mutually exclusive totals reconc
   expect(leadChannelRows.reduce((sum,row)=>sum+row[1],0)).toBe(demoTenant.leads.total);
   expect(leadChannelRows.reduce((sum,row)=>sum+row[3],0)).toBe(demoTenant.totals.revenue);
   expect(leadSourceRows.reduce((sum,row)=>sum+row[2],0)).toBe(demoTenant.leads.total);
+  expect(crossProductAlerts.filter(alert=>!alert.archived)).toHaveLength(10);
+  expect(new Set(crossProductAlerts.map(alert=>alert.product)).size).toBeGreaterThanOrEqual(8);
 });
 
 test('reviews and transactions use known locations and dates inside the demo period',()=>{

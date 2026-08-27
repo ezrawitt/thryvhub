@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const pages=['dashboard','network','listings','reputation','performance','advanced-reporting'];
+const pages=['dashboard','network','listings','reputation','performance','advanced-reporting','alerts'];
 const base='/thryvhub/partner-hub/';
 
 test.beforeEach(async({page})=>{
