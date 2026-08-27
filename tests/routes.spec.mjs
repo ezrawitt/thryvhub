@@ -40,6 +40,43 @@ test('demo tools uses an icon-only header control beside the date range',async({
   await expect(page.locator('.demoToolsTrigger')).toHaveAttribute('aria-expanded','true');
 });
 
+test('Home executive briefing supports evidence, AI context, and story preview',async({page})=>{
+  await page.goto(`${base}dashboard`);
+  const briefing=page.locator('.executiveBriefing');
+  await expect(briefing.getByRole('heading',{name:'Executive Briefing'})).toBeVisible();
+  expect(await briefing.evaluate(element=>Boolean(element.compareDocumentPosition(document.querySelector('.networkHealth'))&Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
+  await expect(briefing.locator('.networkPulse')).toContainText('18 of 25');
+  await expect(briefing.locator('.networkPulse')).toContainText('Reputation response');
+  await briefing.getByRole('button',{name:'Refresh briefing'}).click();
+  await expect(briefing.locator('.briefingNarrative>span')).toContainText('Refreshed');
+  await briefing.getByRole('button',{name:'View evidence'}).click();
+  await expect(briefing.locator('.briefingEvidence')).toContainText('Leads: 4,820 vs 4,446 previous period');
+  await briefing.getByRole('button',{name:'Ask ThryvAI'}).first().click();
+  await expect(page.getByRole('complementary',{name:'ThryvAI assistant'})).toContainText('Explain what changed in this executive briefing');
+  await page.getByRole('button',{name:'Close ThryvAI'}).click();
+  await briefing.getByRole('button',{name:'Prepare network update'}).click();
+  const preview=page.getByRole('dialog',{name:'Network performance update'});
+  await expect(preview).toBeVisible();
+  for(const section of ['Overall result','Important wins','Risks','Actions underway','How Thryv contributed','Next-period focus'])await expect(preview).toContainText(section);
+  await preview.getByRole('button',{name:'Close preview'}).click();
+  await expect(preview).toHaveCount(0);
+  await page.getByRole('button',{name:'How this is calculated'}).click();
+  await expect(page.locator('.calculationDisclosure')).toContainText('directional');
+  await expect(page.locator('.productAiInsight')).toHaveCount(6);
+});
+
+test('executive briefing remains compact and usable on mobile',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(`${base}dashboard`);
+  const briefing=page.locator('.executiveBriefing');
+  await expect(briefing).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
+  const cardPositions=await briefing.locator('.briefingColumns>article').evaluateAll(cards=>cards.map(card=>card.getBoundingClientRect().x));
+  expect(Math.max(...cardPositions)-Math.min(...cardPositions)).toBeLessThan(2);
+  await briefing.getByRole('button',{name:'Prepare network update'}).click();
+  await expect(page.getByRole('dialog',{name:'Network performance update'})).toBeVisible();
+});
+
 test('locations omits the retired legacy roster',async({page})=>{
   await page.goto(`${base}network`);
   await expect(page.getByRole('heading',{name:/Locations/})).toBeVisible();
