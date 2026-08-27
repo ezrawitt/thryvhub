@@ -40,17 +40,25 @@ test('demo tools uses an icon-only header control beside the date range',async({
   await expect(page.locator('.demoToolsTrigger')).toHaveAttribute('aria-expanded','true');
 });
 
-test('product widgets retain product styling and persist a custom order',async({page})=>{
+test('product metrics render as distinct chart widgets and persist custom layouts',async({page})=>{
   await page.goto(`${base}dashboard`);
   await expect(page.locator('.networkHealth')).toBeVisible();
-  const widgets=page.locator('.productWidget');
-  await expect(widgets).toHaveCount(6);
-  await expect(widgets.first()).toContainText('Thryv Growth Platform');
+  const sections=page.locator('.productMetricSection');
+  const widgets=page.locator('.metricWidget');
+  await expect(sections).toHaveCount(6);
+  await expect(widgets).toHaveCount(36);
+  await expect(sections.first()).toContainText('Thryv Growth Platform');
+  await expect(sections.first().locator('.metricWidget')).toHaveCount(6);
+  for(const selector of ['.metricLine','.metricBars','.metricDonut','.metricColumns','.metricStacked','.metricArea'])await expect(sections.first().locator(selector)).toHaveCount(1);
   expect(await widgets.first().evaluate(widget=>getComputedStyle(widget).borderLeftColor)).toBe('rgb(40, 117, 191)');
-  await page.getByRole('button',{name:'Move Thryv Growth Platform widget later'}).click();
-  await expect(widgets.first()).toContainText('Business Center');
+  await sections.first().getByRole('button',{name:'Move Total leads widget later'}).click();
+  await expect(sections.first().locator('.metricWidget').first()).toContainText('Calls');
   await page.reload();
-  await expect(widgets.first()).toContainText('Business Center');
+  await expect(sections.first().locator('.metricWidget').first()).toContainText('Calls');
+  await page.getByRole('button',{name:'Move Thryv Growth Platform section later'}).click();
+  await expect(sections.first()).toContainText('Business Center');
+  await page.reload();
+  await expect(sections.first()).toContainText('Business Center');
 });
 
 test('normal navigation and Back/Forward preserve the route',async({page})=>{
