@@ -40,40 +40,46 @@ test('demo tools uses an icon-only header control beside the date range',async({
   await expect(page.locator('.demoToolsTrigger')).toHaveAttribute('aria-expanded','true');
 });
 
-test('Home executive briefing supports evidence, AI context, and story preview',async({page})=>{
+test('Home Network Overview unifies status, interpretation, priorities, actions, and story preview',async({page})=>{
   await page.goto(`${base}dashboard`);
-  const briefing=page.locator('.executiveBriefing');
-  await expect(briefing.getByRole('heading',{name:'Executive Briefing'})).toBeVisible();
-  expect(await briefing.evaluate(element=>Boolean(element.compareDocumentPosition(document.querySelector('.networkHealth'))&Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
-  await expect(briefing.locator('.networkPulse')).toContainText('18 of 25');
-  await expect(briefing.locator('.networkPulse')).toContainText('Reputation response');
-  await briefing.getByRole('button',{name:'Refresh briefing'}).click();
-  await expect(briefing.locator('.briefingNarrative>span')).toContainText('Refreshed');
-  await briefing.getByRole('button',{name:'View evidence'}).click();
-  await expect(briefing.locator('.briefingEvidence')).toContainText('Leads: 4,820 vs 4,446 previous period');
-  await briefing.getByRole('button',{name:'Ask ThryvAI'}).first().click();
-  await expect(page.getByRole('complementary',{name:'ThryvAI assistant'})).toContainText('Explain what changed in this executive briefing');
+  const overview=page.locator('.networkOverview');
+  await expect(overview.getByRole('heading',{name:'Network Overview'})).toBeVisible();
+  await expect(page.locator('.executiveBriefing, .networkHealth, .networkPulse, .briefingColumns')).toHaveCount(0);
+  await expect(overview.locator('.overviewStatus')).toContainText('18 of 25 locations improving');
+  await expect(overview.locator('.overviewInterpretation')).toContainText('Revenue is growing faster than lead volume');
+  await expect(overview.locator('.priorityList article')).toHaveCount(3);
+  await expect(overview.locator('.recommendedActionArea article')).toHaveCount(3);
+  await overview.getByRole('button',{name:'Refresh briefing'}).click();
+  await expect(overview.locator('.overviewRefreshState')).toContainText('Refreshed');
+  await overview.getByRole('button',{name:'View evidence'}).click();
+  await expect(overview.locator('.briefingEvidence')).toContainText('Leads: 4,820 current · 4,446 previous period');
+  await overview.getByRole('button',{name:'Create network action plan'}).click();
+  await expect(page.getByRole('complementary',{name:'ThryvAI assistant'})).toContainText('Create a network action plan using this overview');
   await page.getByRole('button',{name:'Close ThryvAI'}).click();
-  await briefing.getByRole('button',{name:'Prepare network update'}).click();
+  await overview.getByRole('button',{name:'Prepare network update'}).click();
   const preview=page.getByRole('dialog',{name:'Network performance update'});
   await expect(preview).toBeVisible();
   for(const section of ['Overall result','Important wins','Risks','Actions underway','How Thryv contributed','Next-period focus'])await expect(preview).toContainText(section);
   await preview.getByRole('button',{name:'Close preview'}).click();
   await expect(preview).toHaveCount(0);
-  await page.getByRole('button',{name:'How this is calculated'}).click();
+  await overview.getByRole('button',{name:'How this is calculated'}).click();
   await expect(page.locator('.calculationDisclosure')).toContainText('directional');
   await expect(page.locator('.productAiInsight')).toHaveCount(6);
+  await expect(page.getByRole('heading',{name:'Performance Drivers by Product'})).toBeVisible();
+  await expect(page.locator('.productAiInsight').first()).toContainText('Network context');
 });
 
-test('executive briefing remains compact and usable on mobile',async({page})=>{
+test('Network Overview preserves the narrative order and remains usable on mobile',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto(`${base}dashboard`);
-  const briefing=page.locator('.executiveBriefing');
-  await expect(briefing).toBeVisible();
+  const overview=page.locator('.networkOverview');
+  await expect(overview).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth)).toBe(true);
-  const cardPositions=await briefing.locator('.briefingColumns>article').evaluateAll(cards=>cards.map(card=>card.getBoundingClientRect().x));
-  expect(Math.max(...cardPositions)-Math.min(...cardPositions)).toBeLessThan(2);
-  await briefing.getByRole('button',{name:'Prepare network update'}).click();
+  const y=await overview.locator('.overviewStatus,.overviewInterpretation,.overviewPriorities,.recommendedActionArea').evaluateAll(elements=>elements.map(element=>element.getBoundingClientRect().y));
+  expect(y).toEqual([...y].sort((a,b)=>a-b));
+  await expect(overview.locator('.overviewStatus>.overviewDimensions')).toBeHidden();
+  await expect(overview.locator('.overviewInterpretation>.mobileDimensions')).toBeVisible();
+  await overview.getByRole('button',{name:'Prepare network update'}).click();
   await expect(page.getByRole('dialog',{name:'Network performance update'})).toBeVisible();
 });
 
@@ -103,7 +109,8 @@ test('cross-product alerts are available below Tools and support triage',async({
 
 test('product metrics render as distinct chart widgets and persist custom layouts',async({page})=>{
   await page.goto(`${base}dashboard`);
-  await expect(page.locator('.networkHealth')).toBeVisible();
+  await expect(page.locator('.networkOverview')).toBeVisible();
+  await page.getByRole('button',{name:'Customize view'}).click();
   const sections=page.locator('.productMetricSection');
   const widgets=page.locator('.metricWidget');
   await expect(sections).toHaveCount(6);
@@ -116,6 +123,7 @@ test('product metrics render as distinct chart widgets and persist custom layout
   await expect(sections.first().locator('.metricWidget').first()).toContainText('Calls');
   await page.reload();
   await expect(sections.first().locator('.metricWidget').first()).toContainText('Calls');
+  await page.getByRole('button',{name:'Customize view'}).click();
   await page.getByRole('button',{name:'Move Thryv Growth Platform section later'}).click();
   await expect(sections.first()).toContainText('Business Center');
   await page.reload();
@@ -125,6 +133,7 @@ test('product metrics render as distinct chart widgets and persist custom layout
 test('widgets can be hidden, restored, and compact product sections share a row',async({page})=>{
   await page.setViewportSize({width:1600,height:1000});
   await page.goto(`${base}dashboard`);
+  await page.getByRole('button',{name:'Customize view'}).click();
   const businessCenter=page.locator('#product-business-center');
   const keap=page.locator('#product-keap');
   for(const section of [businessCenter,keap]){
