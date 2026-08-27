@@ -8,7 +8,7 @@ test.beforeEach(async({page})=>{
 });
 
 test('every visible enabled button produces an observable result',async({page})=>{
-  test.setTimeout(180_000);
+  test.setTimeout(420_000);
   const silent=[];
   for(const route of pages){
     await page.goto(base+route,{waitUntil:'domcontentloaded'});

@@ -46,11 +46,16 @@ test('Home Network Overview unifies status, interpretation, priorities, actions,
   await expect(overview.getByRole('heading',{name:'Network Overview'})).toBeVisible();
   await expect(page.locator('.executiveBriefing, .networkHealth, .networkPulse, .briefingColumns')).toHaveCount(0);
   await expect(overview.locator('.overviewStatus')).toContainText('18 of 25 locations improving');
-  await expect(overview.locator('.overviewInterpretation')).toContainText('Revenue is growing faster than lead volume');
+  await expect(overview.locator('.overviewInterpretation')).toContainText('Revenue growth is outpacing lead growth');
   await expect(overview.locator('.priorityList article')).toHaveCount(3);
+  await expect(overview.locator('.priorityHeader')).toContainText('Top priorities · 3 of 5');
+  await expect(overview.locator('.priorityList a')).toHaveCount(0);
+  await expect(overview.getByRole('link',{name:'View all 5'})).toHaveAttribute('href',`${base}alerts?filter=attention`);
   await expect(overview.locator('.recommendedActionArea article')).toHaveCount(3);
   await overview.getByRole('button',{name:'Refresh briefing'}).click();
   await expect(overview.locator('.overviewRefreshState')).toContainText('Refreshed');
+  const timezone=await page.evaluate(timeZone=>new Intl.DateTimeFormat('en-US',{timeZone,timeZoneName:'short'}).formatToParts(new Date()).find(part=>part.type==='timeZoneName').value,demoTenant.organization.timezone);
+  await expect(overview.locator('.overviewRefreshState')).toContainText(timezone);
   await overview.getByRole('button',{name:'View evidence'}).click();
   await expect(overview.locator('.briefingEvidence')).toContainText('Leads: 4,820 current · 4,446 previous period');
   await overview.getByRole('button',{name:'Create network action plan'}).click();
@@ -66,7 +71,22 @@ test('Home Network Overview unifies status, interpretation, priorities, actions,
   await expect(page.locator('.calculationDisclosure')).toContainText('directional');
   await expect(page.locator('.productAiInsight')).toHaveCount(6);
   await expect(page.getByRole('heading',{name:'Performance Drivers by Product'})).toBeVisible();
-  await expect(page.locator('.productAiInsight').first()).toContainText('Network context');
+  await expect(page.locator('.productAiInsight').first()).toContainText('Network insight');
+});
+
+test('product detail starts focused and can progressively disclose supporting metrics',async({page})=>{
+  await page.goto(`${base}dashboard`);
+  const sections=page.locator('.productMetricSection');
+  await expect(sections).toHaveCount(6);
+  await expect(page.locator('.metricWidget')).toHaveCount(18);
+  await expect(sections.first().locator('.metricWidget')).toHaveCount(3);
+  await sections.first().getByRole('button',{name:'View details (3 more)'}).click();
+  await expect(sections.first().locator('.metricWidget')).toHaveCount(6);
+  await sections.first().getByRole('button',{name:'Hide details'}).click();
+  await expect(sections.first().locator('.metricWidget')).toHaveCount(3);
+  const bridge=page.getByRole('navigation',{name:'Jump to supporting product signals'});
+  await bridge.getByRole('link',{name:'Revenue growth → Business Center'}).click();
+  await expect(page).toHaveURL(new RegExp(`${base}dashboard#product-business-center$`));
 });
 
 test('Network Overview preserves the narrative order and remains usable on mobile',async({page})=>{
@@ -172,7 +192,7 @@ test('normal navigation and Back/Forward preserve the route',async({page})=>{
 
 test('copied and new-tab route URLs load independently',async({page,context})=>{
   await page.goto(`${base}dashboard`);
-  const copied=await page.getByRole('link',{name:'Reputation'}).getAttribute('href');
+  const copied=await page.getByRole('link',{name:'Reputation',exact:true}).getAttribute('href');
   expect(copied).toBe(`${base}reputation`);
   const newTab=await context.newPage();
   await newTab.addInitScript(()=>sessionStorage.setItem('thryvhub-demo-access','granted'));
