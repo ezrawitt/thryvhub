@@ -68,6 +68,29 @@ test('product metrics render as distinct chart widgets and persist custom layout
   await expect(sections.first()).toContainText('Business Center');
 });
 
+test('widgets can be hidden, restored, and compact product sections share a row',async({page})=>{
+  await page.setViewportSize({width:1600,height:1000});
+  await page.goto(`${base}dashboard`);
+  const businessCenter=page.locator('#product-business-center');
+  const keap=page.locator('#product-keap');
+  for(const section of [businessCenter,keap]){
+    for(let index=0;index<4;index++)await section.locator('.metricWidget').nth(2).getByRole('button',{name:/^Hide .* widget$/}).click();
+    await expect(section.locator('.metricWidget')).toHaveCount(2);
+    await expect(section).toHaveClass(/isCompact/);
+  }
+  const positions=await Promise.all([businessCenter,keap].map(section=>section.evaluate(element=>({x:element.getBoundingClientRect().x,y:element.getBoundingClientRect().y}))));
+  expect(Math.abs(positions[0].y-positions[1].y)).toBeLessThan(2);
+  expect(positions[0].x).not.toBe(positions[1].x);
+  await businessCenter.getByRole('button',{name:/Add widgets/}).click();
+  await businessCenter.getByRole('button',{name:'Outstanding invoices'}).click();
+  await expect(businessCenter.locator('.metricWidget')).toHaveCount(3);
+  await expect(businessCenter).not.toHaveClass(/isCompact/);
+  await businessCenter.getByRole('button',{name:'Hide Outstanding invoices widget'}).click();
+  await page.reload();
+  await expect(businessCenter.locator('.metricWidget')).toHaveCount(2);
+  await expect(keap.locator('.metricWidget')).toHaveCount(2);
+});
+
 test('normal navigation and Back/Forward preserve the route',async({page})=>{
   const consoleErrors=[];
   page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text())});
