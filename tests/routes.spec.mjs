@@ -110,6 +110,12 @@ test('locations omits the retired legacy roster',async({page})=>{
   await expect(page.locator('.stats, .locationToolbar, .locationTable')).toHaveCount(0);
 });
 
+test('Support omits the duplicate embedded Support Center header',async({page})=>{
+  await page.goto(`${base}support`);
+  await expect(page.locator('.supportEmbed>header')).toHaveCount(0);
+  await expect(page.getByRole('heading',{name:'Need Help With Thryv?'})).toBeVisible();
+});
+
 test('cross-product alerts are available below Tools and support triage',async({page})=>{
   await page.goto(`${base}alerts`);
   const coaching=page.locator('.side nav section').filter({hasText:'Coaching'});
