@@ -29,6 +29,34 @@ test('all rendered application links retain the deployment base',async({page})=>
   for(const href of hrefs)expect(href).toMatch(/^\/thryvhub\/partner-hub\//);
 });
 
+test('Listings mirrors the location-management workflow with functional prototype controls',async({page})=>{
+  await page.goto(`${base}listings`);
+  await expect(page.locator('.listingWorkspace')).toBeVisible();
+  await expect(page.getByRole('table',{name:'Listings location table'})).toContainText('Profile Completion');
+  await expect(page.getByRole('table',{name:'Listings location table'}).locator('tbody tr')).toHaveCount(demoTenant.totals.listingsConnected);
+  await page.getByRole('button',{name:/Advanced Filters/}).click();
+  await expect(page.getByRole('dialog',{name:'Advanced filters'})).toContainText('Product Plan');
+  await page.getByRole('dialog',{name:'Advanced filters'}).getByRole('button',{name:'Cancel'}).click();
+  await page.getByRole('button',{name:'Sync Status'}).click();
+  await expect(page.getByRole('menu',{name:'Sync Status'})).toContainText('Requires review');
+  await page.getByRole('button',{name:/Personalize table/}).click();
+  const settings=page.getByRole('dialog',{name:'Table settings'});
+  await expect(settings).toContainText('Row Density');
+  await settings.getByLabel('Compact').check();
+  await settings.getByRole('button',{name:'Apply'}).click();
+  await expect(page.locator('.listingTable')).toHaveClass(/compact/);
+  await page.getByRole('button',{name:'Map view'}).click();
+  await expect(page.locator('.listingMap')).toContainText(`${demoTenant.totals.listingsConnected} locations`);
+  await page.getByRole('button',{name:'List view'}).click();
+  await page.getByRole('button',{name:/Bulk Update/}).click();
+  await expect(page.getByRole('heading',{name:'Bulk Editor'})).toBeVisible();
+  await page.getByRole('button',{name:/Add locations/}).click();
+  await expect(page.getByRole('dialog',{name:'Add locations'})).toBeVisible();
+  await page.getByRole('dialog',{name:'Add locations'}).getByLabel(/Baldwin Park/).check();
+  await page.getByRole('dialog',{name:'Add locations'}).getByRole('button',{name:/Add 1 locations/}).click();
+  await expect(page.getByText('1 locations selected')).toBeVisible();
+});
+
 test('demo tools uses an icon-only header control beside the date range',async({page})=>{
   await page.goto(`${base}dashboard`);
   const trigger=page.getByRole('button',{name:'Open demo tools'});
