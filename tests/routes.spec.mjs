@@ -108,6 +108,16 @@ test('demo tools uses an icon-only header control beside the date range',async({
   await trigger.click();
   await expect(page.getByRole('region',{name:'Demo tools'})).toBeVisible();
   await expect(page.locator('.demoToolsTrigger')).toHaveAttribute('aria-expanded','true');
+  const navigation=page.locator('.side nav');
+  await expect(navigation).toContainText('Brand Presence');
+  await page.getByRole('region',{name:'Demo tools'}).getByRole('button',{name:'Base'}).click();
+  await expect(navigation).not.toContainText('Brand Presence');
+  await expect(navigation).not.toContainText('Listings');
+  await page.getByRole('region',{name:'Demo tools'}).getByRole('button',{name:'Analytics +'}).click();
+  await expect(navigation).not.toContainText('Brand Presence');
+  await page.getByRole('region',{name:'Demo tools'}).getByRole('button',{name:'Manage +'}).click();
+  await expect(navigation).toContainText('Brand Presence');
+  await expect(navigation).toContainText('Listings');
 });
 
 test('Home Network Overview unifies status, interpretation, priorities, actions, and story preview',async({page})=>{
