@@ -79,6 +79,26 @@ test('Reputation supports inbox replies, templates, requests, and automated resp
   await expect(page.getByText('AI-assisted draft').first()).toBeVisible();
 });
 
+test('Social supports post management, templates, calendar, approvals, and post creation',async({page})=>{
+  await page.goto(`${base}social`);
+  await expect(page.locator('.socialPostTable tbody tr')).toHaveCount(5);
+  await page.getByRole('button',{name:'Filters'}).click();
+  await expect(page.getByRole('dialog',{name:'Social filters'})).toContainText('All channels');
+  await page.getByRole('dialog',{name:'Social filters'}).getByRole('button',{name:'Apply'}).click();
+  await page.getByRole('button',{name:'Templates'}).click();
+  await expect(page.getByRole('heading',{name:'Templates'})).toBeVisible();
+  await expect(page.locator('.templateGrid article')).toHaveCount(3);
+  await page.getByRole('button',{name:'Calendar'}).click();
+  await expect(page.getByRole('heading',{name:/August 2026/})).toBeVisible();
+  await expect(page.locator('.calendarGrid')).toContainText('Seasonal spotlight');
+  await page.getByRole('button',{name:'Approvals'}).click();
+  await expect(page.locator('.approvalCards article')).toHaveCount(2);
+  await page.getByRole('button',{name:'Posts'}).click();
+  await page.getByRole('button',{name:/Create/}).click();
+  await expect(page.getByRole('heading',{name:'Create New Post'})).toBeVisible();
+  await expect(page.getByLabel('Post copy')).toBeVisible();
+});
+
 test('demo tools uses an icon-only header control beside the date range',async({page})=>{
   await page.goto(`${base}dashboard`);
   const trigger=page.getByRole('button',{name:'Open demo tools'});
