@@ -57,6 +57,28 @@ test('Listings mirrors the location-management workflow with functional prototyp
   await expect(page.getByText('1 locations selected')).toBeVisible();
 });
 
+test('Reputation supports inbox replies, templates, requests, and automated response workflows',async({page})=>{
+  await page.goto(`${base}reputation`);
+  await expect(page.locator('.reviewInbox')).toBeVisible();
+  await expect(page.locator('.reviewList .review')).toHaveCount(demoTenant.subsets.reviewSamples);
+  await page.getByRole('button',{name:/Generate/}).click();
+  await expect(page.getByLabel(/Reply to/)).not.toHaveValue('',{timeout:2000});
+  await page.getByRole('button',{name:'Response Templates'}).click();
+  await expect(page.getByRole('heading',{name:'Response Templates',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:/Create New Template/}).click();
+  await expect(page.getByLabel('Template Title')).toBeVisible();
+  await page.getByRole('button',{name:'Send Review Request'}).click();
+  await expect(page.getByRole('heading',{name:'Send Review Request'})).toBeVisible();
+  await page.getByRole('button',{name:/New Request/}).click();
+  await expect(page.getByRole('dialog',{name:'New request'})).toContainText('Select a review type');
+  await page.getByRole('dialog',{name:'New request'}).getByRole('button',{name:'Close new request'}).click();
+  await page.getByRole('button',{name:'Automated Responses'}).click();
+  await expect(page.getByRole('heading',{name:'Automated Responses'})).toBeVisible();
+  await page.getByRole('button',{name:/New Automated Response/}).click();
+  await expect(page.getByText('Rule Triggers')).toBeVisible();
+  await expect(page.getByText('AI-assisted draft').first()).toBeVisible();
+});
+
 test('demo tools uses an icon-only header control beside the date range',async({page})=>{
   await page.goto(`${base}dashboard`);
   const trigger=page.getByRole('button',{name:'Open demo tools'});
