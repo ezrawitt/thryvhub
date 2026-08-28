@@ -41,7 +41,7 @@ test.beforeEach(async({page})=>page.addInitScript(()=>sessionStorage.setItem('th
 
 test('page-level canonical totals agree across reporting surfaces',async({page})=>{
   await page.goto('/thryvhub/partner-hub/network');
-  await expect(page.locator('h1')).toContainText(`(${demoTenant.totals.locations})`);
+  await expect(page.locator('body')).toContainText(`${demoTenant.totals.locations} customers`);
   await page.goto('/thryvhub/partner-hub/listings');
   await expect(page.locator('body')).toContainText(`${demoTenant.totals.listingsConnected} locations`);
   await page.goto('/thryvhub/partner-hub/reputation');

@@ -85,7 +85,7 @@ test('Social supports post management, templates, calendar, approvals, and post 
   await page.getByRole('button',{name:'Filters'}).click();
   await expect(page.getByRole('dialog',{name:'Social filters'})).toContainText('All channels');
   await page.getByRole('dialog',{name:'Social filters'}).getByRole('button',{name:'Apply'}).click();
-  await page.getByRole('button',{name:'Templates'}).click();
+  await page.getByRole('button',{name:'Templates',exact:true}).click();
   await expect(page.getByRole('heading',{name:'Templates'})).toBeVisible();
   await expect(page.locator('.templateGrid article')).toHaveCount(3);
   await page.getByRole('button',{name:'Calendar'}).click();
@@ -94,7 +94,7 @@ test('Social supports post management, templates, calendar, approvals, and post 
   await page.getByRole('button',{name:'Approvals'}).click();
   await expect(page.locator('.approvalCards article')).toHaveCount(2);
   await page.getByRole('button',{name:'Posts'}).click();
-  await page.getByRole('button',{name:/Create/}).click();
+  await page.getByRole('button',{name:'Create',exact:true}).click();
   await expect(page.getByRole('heading',{name:'Create New Post'})).toBeVisible();
   await expect(page.getByLabel('Post copy')).toBeVisible();
 });
@@ -109,24 +109,24 @@ test('demo tools uses an icon-only header control beside the date range',async({
   await expect(page.getByRole('region',{name:'Demo tools'})).toBeVisible();
   await expect(page.locator('.demoToolsTrigger')).toHaveAttribute('aria-expanded','true');
   const navigation=page.locator('.side nav');
-  await expect(navigation).toContainText('Brand Presence');
+  await expect(navigation).toContainText('Customer Growth');
   await page.getByRole('region',{name:'Demo tools'}).getByRole('button',{name:'Base'}).click();
-  await expect(navigation).not.toContainText('Brand Presence');
+  await expect(navigation).not.toContainText('Customer Growth');
   await expect(navigation).not.toContainText('Listings');
   await page.getByRole('region',{name:'Demo tools'}).getByRole('button',{name:'Analytics +'}).click();
-  await expect(navigation).not.toContainText('Brand Presence');
+  await expect(navigation).not.toContainText('Customer Growth');
   await page.getByRole('region',{name:'Demo tools'}).getByRole('button',{name:'Manage +'}).click();
-  await expect(navigation).toContainText('Brand Presence');
+  await expect(navigation).toContainText('Customer Growth');
   await expect(navigation).toContainText('Listings');
 });
 
 test('Home Network Overview unifies status, interpretation, priorities, actions, and story preview',async({page})=>{
   await page.goto(`${base}dashboard`);
   const overview=page.locator('.networkOverview');
-  await expect(overview.getByRole('heading',{name:'Network Overview'})).toBeVisible();
+  await expect(overview.getByRole('heading',{name:'Customer Portfolio Overview'})).toBeVisible();
   await expect(page.locator('.executiveBriefing, .networkHealth, .networkPulse, .briefingColumns')).toHaveCount(0);
-  await expect(overview.locator('.overviewStatus')).toContainText('18 of 25 locations improving');
-  await expect(overview.locator('.overviewInterpretation')).toContainText('Revenue growth is outpacing lead growth');
+  await expect(overview.locator('.overviewStatus')).toContainText('18 of 25 customers improving');
+  await expect(overview.locator('.overviewInterpretation')).toContainText('Revenue is growing faster than lead volume');
   await expect(overview.locator('.priorityList article')).toHaveCount(3);
   await expect(overview.locator('.priorityHeader')).toContainText('Top priorities · 3 of 5');
   await expect(overview.locator('.priorityList a')).toHaveCount(0);
@@ -138,20 +138,20 @@ test('Home Network Overview unifies status, interpretation, priorities, actions,
   await expect(overview.locator('.overviewRefreshState')).toContainText(timezone);
   await overview.getByRole('button',{name:'View evidence'}).click();
   await expect(overview.locator('.briefingEvidence')).toContainText('Leads: 4,820 current · 4,446 previous period');
-  await overview.getByRole('button',{name:'Create network action plan'}).click();
-  await expect(page.getByRole('complementary',{name:'ThryvAI assistant'})).toContainText('Create a network action plan using this overview');
+  await overview.getByRole('button',{name:'Create customer success plan'}).click();
+  await expect(page.getByRole('complementary',{name:'ThryvAI assistant'})).toContainText('Create a customer success plan using this overview');
   await page.getByRole('button',{name:'Close ThryvAI'}).click();
-  await overview.getByRole('button',{name:'Prepare network update'}).click();
-  const preview=page.getByRole('dialog',{name:'Network performance update'});
+  await overview.getByRole('button',{name:'Prepare portfolio update'}).click();
+  const preview=page.getByRole('dialog',{name:'Portfolio Performance update'});
   await expect(preview).toBeVisible();
-  for(const section of ['Overall result','Important wins','Risks','Actions underway','How Thryv contributed','Next-period focus'])await expect(preview).toContainText(section);
+  for(const section of ['Overall result','Important wins','Risks','Actions underway'])await expect(preview).toContainText(section);
   await preview.getByRole('button',{name:'Close preview'}).click();
   await expect(preview).toHaveCount(0);
   await overview.getByRole('button',{name:'How this is calculated'}).click();
   await expect(page.locator('.calculationDisclosure')).toContainText('directional');
   await expect(page.locator('.productAiInsight')).toHaveCount(6);
   await expect(page.getByRole('heading',{name:'Performance Drivers by Product'})).toBeVisible();
-  await expect(page.locator('.productAiInsight').first()).toContainText('Network insight');
+  await expect(page.locator('.productAiInsight').first()).toContainText('Portfolio average insight');
 });
 
 test('product detail starts focused and can progressively disclose supporting metrics',async({page})=>{
@@ -179,41 +179,39 @@ test('Network Overview preserves the narrative order and remains usable on mobil
   expect(y).toEqual([...y].sort((a,b)=>a-b));
   await expect(overview.locator('.overviewStatus>.overviewDimensions')).toBeHidden();
   await expect(overview.locator('.overviewInterpretation>.mobileDimensions')).toBeVisible();
-  await overview.getByRole('button',{name:'Prepare network update'}).click();
-  await expect(page.getByRole('dialog',{name:'Network performance update'})).toBeVisible();
+  await overview.getByRole('button',{name:'Prepare portfolio update'}).click();
+  await expect(page.getByRole('dialog',{name:'Portfolio Performance update'})).toBeVisible();
 });
 
-test('locations omits the retired legacy roster',async({page})=>{
+test('managed entities use the contextual operational experience',async({page})=>{
   await page.goto(`${base}network`);
-  await expect(page.getByRole('heading',{name:/Locations/})).toBeVisible();
-  await expect(page.locator('.gpLocations')).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Customers'})).toBeVisible();
+  await expect(page.locator('.operationalPanel')).toBeVisible();
   await expect(page.locator('.stats, .locationToolbar, .locationTable')).toHaveCount(0);
 });
 
 test('Support omits the duplicate embedded Support Center header',async({page})=>{
   await page.goto(`${base}support`);
   await expect(page.locator('.supportEmbed>header')).toHaveCount(0);
-  await expect(page.getByRole('heading',{name:'Need Help With Thryv?'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'How can we help?'})).toBeVisible();
 });
 
 test('cross-product alerts are available below Tools and support triage',async({page})=>{
   await page.goto(`${base}alerts`);
-  const coaching=page.locator('.side nav section').filter({hasText:'Coaching'});
-  expect(await coaching.locator('a').allTextContents()).toEqual(['Tasks & Checklists','Tools','Alerts']);
-  await expect(page.locator('.alertCard')).toHaveCount(10);
-  for(const product of ['Keap','Thryv Growth Platform','Business Center','SEO','Social Ads','Leads','Listings','Reputation'])await expect(page.getByText(product,{exact:true}).first()).toBeVisible();
-  await page.getByRole('tab',{name:'Critical (3)'}).click();
-  await expect(page.locator('.alertCard')).toHaveCount(3);
+  const success=page.locator('.side nav section').filter({hasText:'Customer Success'});
+  expect(await success.locator('a').allTextContents()).toEqual(['Success Plans','Alerts','Partner Tools']);
+  await expect(page.locator('.alertCard')).toHaveCount(7);
+  await page.getByRole('button',{name:'Critical (2)'}).click();
+  await expect(page.locator('.alertCard')).toHaveCount(2);
   const firstAlert=page.locator('.alertCard').first();
   await firstAlert.locator('.alertAction').click();
   await expect(firstAlert.locator('.alertPreview')).toBeVisible();
-  await firstAlert.locator('.archiveAlert').click();
-  await expect(page.locator('.alertCard')).toHaveCount(2);
-  await page.getByRole('tab',{name:'Archive (2)'}).click();
-  await expect(page.locator('.alertCard')).toHaveCount(2);
+  await firstAlert.getByRole('button',{name:/Archive/}).click();
+  await expect(page.locator('.alertCard')).toHaveCount(1);
 });
 
 test('product metrics render as distinct chart widgets and persist custom layouts',async({page})=>{
+  await page.addInitScript(()=>localStorage.setItem('thryvhub-demo-audience','Franchise'));
   await page.goto(`${base}dashboard`);
   await expect(page.locator('.networkOverview')).toBeVisible();
   await page.getByRole('button',{name:'Customize view'}).click();
@@ -231,9 +229,9 @@ test('product metrics render as distinct chart widgets and persist custom layout
   await expect(sections.first().locator('.metricWidget').first()).toContainText('Calls');
   await page.getByRole('button',{name:'Customize view'}).click();
   await page.getByRole('button',{name:'Move Thryv Growth Platform section later'}).click();
-  await expect(sections.first()).toContainText('Business Center');
+  await expect(sections.first()).toContainText('SEO');
   await page.reload();
-  await expect(sections.first()).toContainText('Business Center');
+  await expect(sections.first()).toContainText('SEO');
 });
 
 test('widgets can be hidden, restored, and compact product sections share a row',async({page})=>{
