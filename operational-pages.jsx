@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import{Bell,Filter,Plus,Search,Settings,X}from'lucide-react';
 import{demoTenant}from'./demo-data.js';
 import{getAudienceContext,getOperationalContext}from'./audience-context.js';
+import BulkUpdateListings from './bulk-update-listings.jsx';
 
 const base=`${import.meta.env.BASE_URL.replace(/\/$/,'')}/partner-hub/`;
 const href=(route,params={})=>{let query=new URLSearchParams(Object.entries(params).filter(([,value])=>value));return `${base}${route}${query.size?'?'+query:''}`};
@@ -23,7 +24,18 @@ export function WorkflowsPage({audience}){
   return <main className="operationalPage workflowsPage"><header><div><small>{context.organizationName}</small><h1>{ops.workTitle}</h1><p>Coordinate active work from recommendation through measurable completion.</p></div><button><Plus/> Create {context.actionPlanLabel}</button></header>{selected&&<section className="handoffBanner"><strong>Preconfigured workflow: {selected}</strong><span>{entity||`Affected ${context.managedEntityPlural} preselected`} · Owner: {owner||context.profileRole} · Source: {source||'Recommended action'}</span><b>Success measure: issue resolved and performance restored during the next reporting period.</b><a href={href('tasks')}>Clear workflow context</a></section>}<div className="viewTabs"><button className={view==='active'?'active':''} onClick={()=>setView('active')}>Active Work</button><button className={view==='builder'?'active':''} onClick={()=>setView('builder')}>Templates / Builder</button></div>{view==='active'?<section className="activeWorkGrid">{ops.workItems.map((name,index)=>{let meta=workMeta[index];return <article key={name}><header><span>{meta[3]}</span><strong>{name}</strong></header><p>Source: {index%2?'Performance recommendation':'Alert requiring action'}</p><dl><div><dt>Affected {context.managedEntityPlural}</dt><dd>{meta[0]}</dd></div><div><dt>Owner</dt><dd>{meta[1]}</dd></div><div><dt>Due date</dt><dd>{meta[2]}</dd></div><div><dt>Success measure</dt><dd>{index%2?'Return to target range':'Complete required steps'}</dd></div></dl><div className="progress"><i style={{width:meta[4]}}/><span>{meta[4]}</span></div><button>Open plan</button></article>})}</section>:<section className="builderView"><h2>{ops.workTitle} templates</h2><p>Create, organize, and reuse guided plans without changing production data.</p>{ops.workItems.map(item=><button key={item}>{item}<span>Use template →</span></button>)}</section>}</main>
 }
 
-export function ResourcesPage({audience}){const context=getAudienceContext(audience),ops=getOperationalContext(audience);return <main className="operationalPage resourcesPage"><header><div><small>{context.organizationName}</small><h1>{ops.toolsTitle}</h1><p>Access the resources used to administer and grow your {context.collectionLabel.toLowerCase()}.</p></div></header><section className="resourceGrid">{ops.tools.map((tool,index)=><article key={tool}><span>{['▤','♙','⌘','◇','☷','✓'][index]}</span><h2>{tool}</h2><p>{tool} guidance and connected prototype workflows for {context.managedEntityPlural}.</p><button>Open resource</button></article>)}</section></main>}
+export function ResourcesPage({audience}){
+  const context=getAudienceContext(audience),ops=getOperationalContext(audience),[bulkOpen,setBulkOpen]=useState(false);
+  return <main className="operationalPage resourcesPage">
+    <header><div><small>{context.organizationName}</small><h1>{ops.toolsTitle}</h1><p>Access the resources used to administer and grow your {context.collectionLabel.toLowerCase()}.</p></div></header>
+    <section className="resourceGrid">
+      <article className="bulkToolCard"><span>⇄</span><h2>Bulk Update Listings</h2><p>Apply shared listing details or upload a spreadsheet across permitted clients, brands, groups, and locations.</p><button onClick={()=>setBulkOpen(true)}>Open tool →</button></article>
+      <article><span>☷</span><h2>Update Listings</h2><p>Review and edit listing details for an individual location.</p><a href={href('listings')}>Open tool →</a></article>
+      {ops.tools.map((tool,index)=><article key={tool}><span>{['▤','♙','⌘','◇','☷','✓'][index]}</span><h2>{tool}</h2><p>{tool} guidance and connected prototype workflows for {context.managedEntityPlural}.</p><button>Open resource</button></article>)}
+    </section>
+    {bulkOpen&&<BulkUpdateListings audience={audience} onClose={()=>setBulkOpen(false)}/>} 
+  </main>
+}
 
 export function AudienceSupportPage({audience}){const context=getAudienceContext(audience),ops=getOperationalContext(audience);return <main className="operationalPage audienceSupport"><section className="supportContextHero"><small>{context.organizationName}</small><h1>How can we help?</h1><p>Find guidance for {context.organizationType.toLowerCase()} operations, product questions, and escalations.</p><label><Search/><input aria-label="Search support" placeholder="Search support resources"/></label><a href="https://learn.thryv.com/hc/en-us/requests/new" target="_blank" rel="noreferrer">Contact support ↗</a></section><section className="supportResourceGrid">{ops.support.map(resource=><a key={resource} href="https://learn.thryv.com/hc/en-us" target="_blank" rel="noreferrer"><strong>{resource}</strong><span>Guides, training, and escalation options ↗</span></a>)}</section></main>}
 

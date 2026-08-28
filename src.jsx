@@ -6,6 +6,7 @@ import{getAudienceContext,getOperationalContext,getSpecialistContext,audienceKey
 import{ManagedEntityPage,WorkflowsPage,ResourcesPage,AudienceSupportPage,AudienceSocialPage,AudienceAlertsPage}from'./operational-pages.jsx';
 import{SpecialistContext,ReportingTemplates,AudiencePriorityGuide,AudienceListingsWorkspace,AudienceReputationWorkspace}from'./specialist-context.jsx';
 import'./style.css';
+import'./bulk-update-listings.css';
 import'./locations.css';
 import'./listings.css';
 import'./listing-fixes.css';
