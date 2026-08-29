@@ -7,7 +7,7 @@ for(const audience of Object.keys(audienceContexts))test(`${audience} specialist
   const context=audienceContexts[audience],specialist=specialistContexts[audience];
   await page.addInitScript(value=>localStorage.setItem('thryvhub-demo-audience',value),audience);
   await page.goto(base+'dashboard');
-  await expect(page.locator('.audiencePriorityGuide')).toContainText(specialist.overviewPriorities[0]);
+  await expect(page.locator('.audiencePriorityGuide')).toHaveCount(0);
   await expect(page.locator('.prepareUpdate')).toHaveText(specialist.updateLabel);
   await expect(page.locator('.productMetricSection').first()).toBeVisible();
   await page.goto(base+'listings');
