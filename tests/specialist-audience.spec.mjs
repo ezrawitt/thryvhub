@@ -11,8 +11,8 @@ for(const audience of Object.keys(audienceContexts))test(`${audience} specialist
   await expect(page.locator('.prepareUpdate')).toHaveText(specialist.updateLabel);
   await expect(page.locator('.productMetricSection').first()).toBeVisible();
   await page.goto(base+'listings');
-  await expect(page.locator('.specialistContext')).toContainText(specialist.listingsPurpose);
-  await expect(page.locator('.specialistContext')).toContainText(specialist.governance.split(' · ')[0]);
+  await expect(page.locator('.listingsIntegration')).toHaveCount(1);
+  await expect(page.locator('.specialistContext,.specialistWorkspace')).toHaveCount(0);
   await page.goto(base+'reputation');
   await expect(page.locator('.specialistContext')).toContainText(specialist.reputationPurpose);
   await page.goto(base+'advanced-reporting');
@@ -21,7 +21,7 @@ for(const audience of Object.keys(audienceContexts))test(`${audience} specialist
 });
 
 test('data trust exposes scope, freshness, definition, sources, and completeness',async({page})=>{
-  await page.goto(base+'listings');
+  await page.goto(base+'reputation');
   await page.getByRole('button',{name:'Data trust and scope'}).click();
   const trust=page.locator('.dataTrustPanel');
   for(const label of ['Definition','Sources','Period','Freshness','Included','Excluded','Scope','Completeness'])await expect(trust).toContainText(label);
