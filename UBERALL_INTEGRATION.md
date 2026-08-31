@@ -9,6 +9,6 @@ Only HTTPS URLs are accepted. Do not include credentials, tokens, or private ten
 
 ## Framing requirement
 
-The standard Uberall sandbox login currently responds with `X-Frame-Options: SAMEORIGIN`. It therefore cannot be embedded by the GitHub Pages origin. Uberall must provide a supported embedding method or configure an approved URL whose `Content-Security-Policy` `frame-ancestors` directive permits the Partner Hub origin.
+The configured `https://uberall.com/en/app/thryv/locations` URL redirects unauthenticated sessions to Uberall login. Both responses currently include `X-Frame-Options: SAMEORIGIN`, so Chrome cannot display them inside the GitHub Pages origin. Uberall must provide a supported embedding method or configure an approved URL whose `Content-Security-Policy` `frame-ancestors` directive permits the Partner Hub origin.
 
 Until that configuration is available, the route intentionally displays the focused integration fallback rather than attempting to bypass Uberall's security headers.

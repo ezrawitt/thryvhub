@@ -33,8 +33,10 @@ test('Listings renders one focused Uberall integration surface',async({page})=>{
   await page.goto(`${base}listings`);
   await expect(page.locator('.listingsIntegration')).toHaveCount(1);
   await expect(page.locator('.specialistContext,.specialistWorkspace,.listingWorkspace,.listTop,.listingTable,.listingMap')).toHaveCount(0);
-  await expect(page.getByLabel('Uberall Listings integration unavailable')).toBeVisible();
-  await expect(page.getByText('Listings integration is not configured')).toBeVisible();
+  const frame=page.locator('iframe[title="Uberall Listings platform"]');
+  await expect(frame).toHaveCount(1);
+  await expect(frame).toHaveAttribute('src','https://uberall.com/en/app/thryv/locations');
+  await expect(page.getByRole('link',{name:/Open in Uberall/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/locations');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
