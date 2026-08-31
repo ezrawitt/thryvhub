@@ -4,11 +4,13 @@ The Partner Hub Listings route reads two optional Vite environment variables:
 
 - `VITE_UBERALL_LISTINGS_URL`: an Uberall-approved cross-origin embed or SSO URL.
 - `VITE_UBERALL_LAUNCH_URL`: the external launch URL used by the fallback action.
+- `VITE_UBERALL_REPUTATION_URL`: an approved Crossfeed/Reputation embed URL.
+- `VITE_UBERALL_SOCIAL_URL`: an approved Posting/Social embed URL.
 
 Only HTTPS URLs are accepted. Do not include credentials, tokens, or private tenant identifiers in either value.
 
 ## Framing requirement
 
-The configured `https://uberall.com/en/app/thryv/locations` URL redirects unauthenticated sessions to Uberall login. Both responses currently include `X-Frame-Options: SAMEORIGIN`, so Chrome cannot display them inside the GitHub Pages origin. Uberall must provide a supported embedding method or configure an approved URL whose `Content-Security-Policy` `frame-ancestors` directive permits the Partner Hub origin.
+The configured Listings, Crossfeed, and Posting URLs redirect unauthenticated sessions to Uberall login. Those responses currently include `X-Frame-Options: SAMEORIGIN`, so Chrome cannot display them inside the GitHub Pages origin. Uberall must provide a supported embedding method or configure an approved URL whose `Content-Security-Policy` `frame-ancestors` directive permits the Partner Hub origin.
 
 Until that configuration is available, the route intentionally displays the focused integration fallback rather than attempting to bypass Uberall's security headers.

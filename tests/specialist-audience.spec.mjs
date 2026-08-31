@@ -14,17 +14,11 @@ for(const audience of Object.keys(audienceContexts))test(`${audience} specialist
   await expect(page.locator('.listingsIntegration')).toHaveCount(1);
   await expect(page.locator('.specialistContext,.specialistWorkspace')).toHaveCount(0);
   await page.goto(base+'reputation');
-  await expect(page.locator('.specialistContext')).toContainText(specialist.reputationPurpose);
+  await expect(page.locator('.reputationIntegration')).toHaveCount(1);
+  await expect(page.locator('.specialistContext,.specialistWorkspace')).toHaveCount(0);
   await page.goto(base+'advanced-reporting');
   await expect(page.locator('.reportingTemplates')).toContainText(specialist.reports[0]);
   await expect(page.locator('.reportingTemplates')).toContainText(context.organizationName);
-});
-
-test('data trust exposes scope, freshness, definition, sources, and completeness',async({page})=>{
-  await page.goto(base+'reputation');
-  await page.getByRole('button',{name:'Data trust and scope'}).click();
-  const trust=page.locator('.dataTrustPanel');
-  for(const label of ['Definition','Sources','Period','Freshness','Included','Excluded','Scope','Completeness'])await expect(trust).toContainText(label);
 });
 
 test('specialist summaries remain usable without horizontal page overflow on mobile',async({page})=>{

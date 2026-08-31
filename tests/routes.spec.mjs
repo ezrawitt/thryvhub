@@ -40,46 +40,26 @@ test('Listings renders one focused Uberall integration surface',async({page})=>{
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
-test('Reputation supports inbox replies, templates, requests, and automated response workflows',async({page})=>{
+test('Reputation renders one focused Uberall Crossfeed integration surface',async({page})=>{
   await page.goto(`${base}reputation`);
-  await expect(page.locator('.reviewInbox')).toBeVisible();
-  await expect(page.locator('.reviewList .review')).toHaveCount(demoTenant.subsets.reviewSamples);
-  await page.getByRole('button',{name:/Generate/}).click();
-  await expect(page.getByLabel(/Reply to/)).not.toHaveValue('',{timeout:2000});
-  await page.getByRole('button',{name:'Response Templates'}).click();
-  await expect(page.getByRole('heading',{name:'Response Templates',exact:true})).toBeVisible();
-  await page.getByRole('button',{name:/Create New Template/}).click();
-  await expect(page.getByLabel('Template Title')).toBeVisible();
-  await page.getByRole('button',{name:'Send Review Request'}).click();
-  await expect(page.getByRole('heading',{name:'Send Review Request'})).toBeVisible();
-  await page.getByRole('button',{name:/New Request/}).click();
-  await expect(page.getByRole('dialog',{name:'New request'})).toContainText('Select a review type');
-  await page.getByRole('dialog',{name:'New request'}).getByRole('button',{name:'Close new request'}).click();
-  await page.getByRole('button',{name:'Automated Responses'}).click();
-  await expect(page.getByRole('heading',{name:'Automated Responses'})).toBeVisible();
-  await page.getByRole('button',{name:/New Automated Response/}).click();
-  await expect(page.getByText('Rule Triggers')).toBeVisible();
-  await expect(page.getByText('AI-assisted draft').first()).toBeVisible();
+  await expect(page.locator('.reputationIntegration')).toHaveCount(1);
+  await expect(page.locator('.specialistContext,.specialistWorkspace,.reputation,.reviewInbox,.reviewList')).toHaveCount(0);
+  const frame=page.locator('iframe[title="Uberall Reputation platform"]');
+  await expect(frame).toHaveCount(1);
+  await expect(frame).toHaveAttribute('src','https://uberall.com/en/app/thryv/crossfeed');
+  await expect(page.getByRole('link',{name:/Open in Uberall/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/crossfeed');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
-test('Social supports post management, templates, calendar, approvals, and post creation',async({page})=>{
+test('Social renders one focused Uberall Posting integration surface',async({page})=>{
   await page.goto(`${base}social`);
-  await expect(page.locator('.socialPostTable tbody tr')).toHaveCount(5);
-  await page.getByRole('button',{name:'Filters'}).click();
-  await expect(page.getByRole('dialog',{name:'Social filters'})).toContainText('All channels');
-  await page.getByRole('dialog',{name:'Social filters'}).getByRole('button',{name:'Apply'}).click();
-  await page.getByRole('button',{name:'Templates',exact:true}).click();
-  await expect(page.getByRole('heading',{name:'Templates'})).toBeVisible();
-  await expect(page.locator('.templateGrid article')).toHaveCount(3);
-  await page.getByRole('button',{name:'Calendar'}).click();
-  await expect(page.getByRole('heading',{name:/August 2026/})).toBeVisible();
-  await expect(page.locator('.calendarGrid')).toContainText('Seasonal spotlight');
-  await page.getByRole('button',{name:'Approvals'}).click();
-  await expect(page.locator('.approvalCards article')).toHaveCount(2);
-  await page.getByRole('button',{name:'Posts'}).click();
-  await page.getByRole('button',{name:'Create',exact:true}).click();
-  await expect(page.getByRole('heading',{name:'Create New Post'})).toBeVisible();
-  await expect(page.getByLabel('Post copy')).toBeVisible();
+  await expect(page.locator('.socialIntegration')).toHaveCount(1);
+  await expect(page.locator('.audienceSocial,.socialPage,.socialPostTable,.socialTemplates,.socialCalendar,.socialApprovals')).toHaveCount(0);
+  const frame=page.locator('iframe[title="Uberall Social platform"]');
+  await expect(frame).toHaveCount(1);
+  await expect(frame).toHaveAttribute('src','https://uberall.com/en/app/thryv/posting');
+  await expect(page.getByRole('link',{name:/Open in Uberall/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/posting');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
 test('demo tools uses an icon-only header control beside the date range',async({page})=>{
