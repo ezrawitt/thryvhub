@@ -15,8 +15,8 @@ for(const [audience,context] of Object.entries(audienceContexts)){
     await page.reload();
     await expect(page.locator('.profile')).toContainText(context.organizationName);
     await page.goto(base+'performance');
-    await expect(page.locator('.npTitle h1')).toHaveText(context.performanceLabel);
-    await expect(page.locator('.locationPerformance h2')).toContainText(context.managedEntityTitleSingular);
+    await expect(page.locator('.contextPerformance h1')).toHaveText(context.performanceLabel);
+    await expect(page.locator('.performanceEntities h2')).toContainText(context.managedEntityTitlePlural);
   });
 }
 
@@ -26,7 +26,8 @@ test('package gates remain intact for contextual navigation',async({page})=>{
   await page.getByRole('button',{name:'Base',exact:true}).click();
   await expect(page.locator('aside.side a',{hasText:'Listings'})).toHaveCount(0);
   await expect(page.locator('aside.side a',{hasText:'Advanced Reporting'})).toHaveCount(0);
-  await page.getByRole('button',{name:'All',exact:true}).click();
+  if(!await page.locator('.demoTools').isVisible())await page.getByRole('button',{name:'Open demo tools'}).click();
+  await page.getByRole('group',{name:'Package'}).getByRole('button',{name:'All',exact:true}).click();
   await expect(page.locator('aside.side a',{hasText:'Listings'})).toHaveCount(1);
   await expect(page.locator('aside.side a',{hasText:'Advanced Reporting'})).toHaveCount(1);
 });

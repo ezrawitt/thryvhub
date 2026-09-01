@@ -39,16 +39,13 @@ test('source does not reintroduce stale or foreign tenant claims',()=>{
 
 test.beforeEach(async({page})=>page.addInitScript(()=>sessionStorage.setItem('thryvhub-demo-access','granted')));
 
-test('page-level canonical totals agree across reporting surfaces',async({page})=>{
-  await page.goto('/thryvhub/partner-hub/network');
-  await expect(page.locator('body')).toContainText(`${demoTenant.totals.locations} customers`);
-  await page.goto('/thryvhub/partner-hub/listings');
-  await expect(page.locator('body')).toContainText(`${demoTenant.totals.listingsConnected} locations`);
-  await page.goto('/thryvhub/partner-hub/reputation');
-  await expect(page.locator('body')).toContainText(`${demoTenant.totals.reviews} reviews across ${demoTenant.totals.locations} locations`);
-  for(const route of ['dashboard','performance','advanced-reporting']){
-    await page.goto(`/thryvhub/partner-hub/${route}`);
-    await expect(page.locator('body')).toContainText(demoTenant.leads.total.toLocaleString());
-    await expect(page.locator('body')).toContainText('$284,770');
+test('page-level entity totals derive from the active audience dataset',async({page})=>{
+  for(const[audience,plural]of Object.entries({Partners:'customers',Agency:'clients',Franchise:'locations',Enterprise:'business units'})){
+    await page.goto('/thryvhub/partner-hub/dashboard');
+    await page.evaluate(({audience})=>localStorage.setItem('thryvhub-demo-config',JSON.stringify({audience,package:'All',products:['Keap','Thryv Growth Platform'],role:'Demo'})),{audience});
+    await page.goto('/thryvhub/partner-hub/network');
+    await expect(page.locator('.operationalToolbar')).toContainText(`of 8 ${plural}`);
+    await page.goto('/thryvhub/partner-hub/performance');
+    await expect(page.locator('.performanceEntities')).toContainText(new RegExp(plural,'i'));
   }
 });

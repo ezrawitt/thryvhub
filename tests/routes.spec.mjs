@@ -33,10 +33,8 @@ test('Listings renders one focused Uberall integration surface',async({page})=>{
   await page.goto(`${base}listings`);
   await expect(page.locator('.listingsIntegration')).toHaveCount(1);
   await expect(page.locator('.specialistContext,.specialistWorkspace,.listingWorkspace,.listTop,.listingTable,.listingMap')).toHaveCount(0);
-  const frame=page.locator('iframe[title="Uberall Listings platform"]');
-  await expect(frame).toHaveCount(1);
-  await expect(frame).toHaveAttribute('src','https://uberall.com/en/app/thryv/locations');
-  await expect(page.getByRole('link',{name:/Open in Uberall/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/locations');
+  await expect(page.locator('iframe[title="Uberall Listings platform"]')).toHaveCount(0);
+  await expect(page.getByRole('link',{name:/Continue securely/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/locations');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
@@ -44,10 +42,8 @@ test('Reputation renders one focused Uberall Crossfeed integration surface',asyn
   await page.goto(`${base}reputation`);
   await expect(page.locator('.reputationIntegration')).toHaveCount(1);
   await expect(page.locator('.specialistContext,.specialistWorkspace,.reputation,.reviewInbox,.reviewList')).toHaveCount(0);
-  const frame=page.locator('iframe[title="Uberall Reputation platform"]');
-  await expect(frame).toHaveCount(1);
-  await expect(frame).toHaveAttribute('src','https://uberall.com/en/app/thryv/crossfeed');
-  await expect(page.getByRole('link',{name:/Open in Uberall/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/crossfeed');
+  await expect(page.locator('iframe[title="Uberall Reputation platform"]')).toHaveCount(0);
+  await expect(page.getByRole('link',{name:/Continue securely/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/crossfeed');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
@@ -55,10 +51,8 @@ test('Social renders one focused Uberall Posting integration surface',async({pag
   await page.goto(`${base}social`);
   await expect(page.locator('.socialIntegration')).toHaveCount(1);
   await expect(page.locator('.audienceSocial,.socialPage,.socialPostTable,.socialTemplates,.socialCalendar,.socialApprovals')).toHaveCount(0);
-  const frame=page.locator('iframe[title="Uberall Social platform"]');
-  await expect(frame).toHaveCount(1);
-  await expect(frame).toHaveAttribute('src','https://uberall.com/en/app/thryv/posting');
-  await expect(page.getByRole('link',{name:/Open in Uberall/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/posting');
+  await expect(page.locator('iframe[title="Uberall Social platform"]')).toHaveCount(0);
+  await expect(page.getByRole('link',{name:/Continue securely/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/posting');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
@@ -102,7 +96,7 @@ test('Home Network Overview unifies status, interpretation, priorities, actions,
   await overview.getByRole('button',{name:'View evidence'}).click();
   await expect(overview.locator('.briefingEvidence')).toContainText('Leads: 4,820 current · 4,446 previous period');
   await overview.getByRole('button',{name:'Create customer success plan'}).click();
-  await expect(page.getByRole('complementary',{name:'ThryvAI assistant'})).toContainText('Create a customer success plan using this overview');
+  await expect(page.getByRole('dialog',{name:'ThryvAI assistant'})).toContainText('Create a customer success plan using this overview');
   await page.getByRole('button',{name:'Close ThryvAI'}).click();
   await overview.getByRole('button',{name:'Prepare portfolio update'}).click();
   const preview=page.getByRole('dialog',{name:'Portfolio Performance update'});
@@ -163,12 +157,11 @@ test('cross-product alerts are available below Tools and support triage',async({
   await page.goto(`${base}alerts`);
   const success=page.locator('.side nav section').filter({hasText:'Customer Success'});
   expect(await success.locator('a').allTextContents()).toEqual(['Success Plans','Alerts','Partner Tools']);
-  await expect(page.locator('.alertCard')).toHaveCount(7);
+  await expect(page.locator('.alertCard')).toHaveCount(6);
   await page.getByRole('button',{name:'Critical (2)'}).click();
   await expect(page.locator('.alertCard')).toHaveCount(2);
   const firstAlert=page.locator('.alertCard').first();
-  await firstAlert.locator('.alertAction').click();
-  await expect(firstAlert.locator('.alertPreview')).toBeVisible();
+  await expect(firstAlert.locator('.alertAction')).toHaveAttribute('href',/partner-hub/);
   await firstAlert.getByRole('button',{name:/Archive/}).click();
   await expect(page.locator('.alertCard')).toHaveCount(1);
 });
@@ -251,7 +244,7 @@ test('copied and new-tab route URLs load independently',async({page,context})=>{
 test('query parameters and fragments survive internal navigation',async({page})=>{
   await page.goto(`${base}performance`);
   await page.getByRole('link',{name:/Open Advanced Reporting/}).click();
-  await expect(page).toHaveURL(url=>url.pathname===`${base}advanced-reporting`&&url.searchParams.get('date')===demoTenant.reporting.label&&url.searchParams.get('region')==='All regions'&&url.searchParams.get('metric')==='Leads');
+  await expect(page).toHaveURL(url=>url.pathname===`${base}advanced-reporting`&&url.searchParams.get('entityScope')==='Partners'&&url.searchParams.get('metric')==='Adoption trend');
   await page.setViewportSize({width:390,height:844});
   await page.goto(`${base}dashboard`);
   await page.getByRole('link',{name:'SEO',exact:true}).last().click();

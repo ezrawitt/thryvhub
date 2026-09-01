@@ -1,13 +1,14 @@
 # Uberall Listings integration
 
-The Partner Hub Listings route reads two optional Vite environment variables:
+The Partner Hub Brand Presence routes use explicit, product-specific integration modes:
 
-- `VITE_UBERALL_LISTINGS_URL`: an Uberall-approved cross-origin embed or SSO URL.
-- `VITE_UBERALL_LAUNCH_URL`: the external launch URL used by the fallback action.
-- `VITE_UBERALL_REPUTATION_URL`: an approved Crossfeed/Reputation embed URL.
-- `VITE_UBERALL_SOCIAL_URL`: an approved Posting/Social embed URL.
+- `VITE_UBERALL_LISTINGS_EMBED_URL` and `VITE_UBERALL_LISTINGS_LAUNCH_URL`
+- `VITE_UBERALL_REPUTATION_EMBED_URL` and `VITE_UBERALL_REPUTATION_LAUNCH_URL`
+- `VITE_UBERALL_SOCIAL_EMBED_URL` and `VITE_UBERALL_SOCIAL_LAUNCH_URL`
 
-Only HTTPS URLs are accepted. Do not include credentials, tokens, or private tenant identifiers in either value.
+An approved embed URL renders the framed integration. A launch URL renders the secure-launch handoff with the active organization and scope. If neither is configured, the route shows an explicit unavailable state.
+
+Only HTTPS URLs are accepted. Do not include credentials, tokens, or private tenant identifiers in these values.
 
 ## Framing requirement
 
