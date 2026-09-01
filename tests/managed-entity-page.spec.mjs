@@ -67,6 +67,19 @@ test('selection gates entity actions and rows expose details and prototype feedb
   await expect(page.getByRole('dialog')).toBeVisible();
 });
 
+test('directory view controls provide data, activity and export behavior',async({page})=>{
+  await page.addInitScript(()=>localStorage.setItem('thryvhub-demo-audience','Partners'));
+  await page.goto(base);
+  await expect(page.getByRole('button',{name:'Data',exact:true})).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('button',{name:'Activity',exact:true}).click();
+  await expect(page.locator('.entityActivityView article')).toHaveCount(6);
+  await expect(page.locator('.entityTable')).toHaveCount(0);
+  await page.getByRole('button',{name:'Data',exact:true}).click();
+  await expect(page.locator('.entityTable')).toBeVisible();
+  await page.getByRole('button',{name:/Export/}).click();
+  await expect(page.getByRole('status')).toContainText('export prepared for 8 customers');
+});
+
 for(const viewport of[{name:'tablet',width:820,height:900},{name:'mobile',width:390,height:844}])test(`entity table remains usable at ${viewport.name} width`,async({page})=>{
   await page.setViewportSize(viewport);
   await page.addInitScript(()=>localStorage.setItem('thryvhub-demo-audience','Enterprise'));

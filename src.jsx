@@ -57,6 +57,7 @@ import'./operational-pages.css';
 import'./specialist-context.css';
 import'./phase3-layout-fixes.css';
 import'./reporting-workspace-v2.css';
+import'./managed-entity-page-v2.css';
 
 const routeIcons={dashboard:Home,network:Building2,listings:MapPin,reputation:Star,social:Activity,performance:BarChart3,'advanced-reporting':LayoutGrid,tasks:ClipboardCheck,tools:SlidersHorizontal,alerts:Bell,support:Headphones};
 const TOTAL_LEADS=demoTenant.leads.total.toLocaleString(),TOTAL_REVENUE=formatCurrency(demoTenant.totals.revenue),PAYMENTS_COLLECTED=formatCurrency(demoTenant.totals.paymentsCollected),OUTSTANDING_INVOICES=formatCurrency(demoTenant.totals.outstandingInvoices);
