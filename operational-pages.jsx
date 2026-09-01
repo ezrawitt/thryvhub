@@ -3,18 +3,13 @@ import{Bell,Filter,Plus,Search,Settings,X}from'lucide-react';
 import{demoTenant}from'./demo-data.js';
 import{getAudienceContext,getOperationalContext}from'./audience-context.js';
 import BulkUpdateListings from './bulk-update-listings.jsx';
+import ManagedEntityPage from './managed-entity-page.jsx';
+
+export{ManagedEntityPage};
 
 const base=`${import.meta.env.BASE_URL.replace(/\/$/,'')}/partner-hub/`;
 const href=(route,params={})=>{let query=new URLSearchParams(Object.entries(params).filter(([,value])=>value));return `${base}${route}${query.size?'?'+query:''}`};
 const entityNames=['Hollywood','Dallas Uptown','Baldwin Park','Mission Valley','Westwood','Northgate'];
-
-export function ManagedEntityPage({audience}){
-  const context=getAudienceContext(audience),ops=getOperationalContext(audience);
-  const rows=entityNames.map((name,index)=>[name,index%2?'Growth + Reputation':'All products',index<4?'Active':'Onboarding',`${86-index*4}%`,index===1?'Needs attention':index===4?'Watch':'Healthy',index%2?'Aug 2027':'Nov 2026',index%2?'Jordan Lee':'Morgan Chen']);
-  const[query,setQuery]=useState(''),[feedback,setFeedback]=useState('');
-  const visible=rows.filter(row=>row[0].toLowerCase().includes(query.toLowerCase()));
-  return <main className="operationalPage entityPage"><header><div><small>{context.organizationName}</small><h1>{ops.entityTitle}</h1><p>{ops.purpose}</p></div><button onClick={()=>setFeedback(`${ops.actions[0]} is a temporary prototype workflow.`)}><Plus/> {ops.actions[0]}</button></header><div className="operationalActions">{ops.actions.slice(1).map(action=><button key={action} onClick={()=>setFeedback(`${action} is ready as a guided prototype action for the selected ${context.managedEntitySingular}.`)}>{action}</button>)}</div>{feedback&&<div className="operationalFeedback" role="status">{feedback}<button aria-label="Dismiss" onClick={()=>setFeedback('')}><X/></button></div>}<section className="operationalPanel"><div className="operationalToolbar"><label><Search/><input value={query} onChange={event=>setQuery(event.target.value)} placeholder={`Search ${context.managedEntityPlural}`}/></label><button><Filter/> {context.groupLabel}: All</button><span>{visible.length} of {demoTenant.totals.locations} {context.managedEntityPlural}</span></div><div className="operationalTable"><table><thead><tr>{ops.fields.slice(0,8).map(field=><th key={field}>{field}</th>)}</tr></thead><tbody>{visible.map((row,index)=><tr key={row[0]}>{row.concat([index?'2 open':'None']).slice(0,8).map((value,cell)=><td key={cell}>{value}</td>)}</tr>)}</tbody></table></div></section></main>
-}
 
 const workMeta=[['3 affected','Morgan Chen','Sep 2, 2026','In progress','68%'],['1 affected','Jordan Lee','Sep 5, 2026','Ready','15%'],['8 affected','Regional team','Sep 8, 2026','In progress','42%'],['2 affected','Customer experience','Sep 10, 2026','Blocked','55%'],['5 affected','Growth team','Sep 12, 2026','Ready','0%'],['4 affected','Operations','Sep 15, 2026','In progress','75%']];
 export function WorkflowsPage({audience}){

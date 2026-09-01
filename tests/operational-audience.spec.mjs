@@ -11,8 +11,7 @@ for(const audience of Object.keys(audienceContexts))test(`${audience} operationa
   await page.goto(base+'tasks');await expect(page.locator('h1')).toHaveText(ops.workTitle);await expect(page.locator('.activeWorkGrid')).toContainText(ops.workItems[0]);
   await page.goto(base+'tools');await expect(page.locator('h1')).toHaveText(ops.toolsTitle);await expect(page.locator('.resourceGrid')).toContainText(ops.tools[0]);
   await page.goto(base+'support');await expect(page.locator('.supportResourceGrid')).toContainText(ops.support[0]);
-  await page.goto(base+'social');await expect(page.locator('.viewTabs button').first()).toHaveText(ops.socialTabs[0]);
-  await expect(page.locator('body')).toContainText(context.organizationName);
+  await page.goto(base+'social');await expect(page.locator('.socialIntegration iframe')).toHaveAttribute('src','https://uberall.com/en/app/thryv/posting');
 });
 
 test('alert filters and workflow handoff parameters remain visible and actionable',async({page})=>{

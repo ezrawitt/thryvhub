@@ -226,7 +226,7 @@ test('normal navigation and Back/Forward preserve the route',async({page})=>{
   page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text())});
   await page.goto(`${base}dashboard`);
   consoleErrors.length=0;
-  await page.getByRole('link',{name:'Locations'}).click();
+  await page.getByRole('link',{name:'Customers'}).click();
   await expect(page).toHaveURL(`${base}network`);
   await page.getByRole('link',{name:'Listings'}).click();
   await expect(page).toHaveURL(`${base}listings`);
