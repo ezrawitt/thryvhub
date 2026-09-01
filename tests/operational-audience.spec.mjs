@@ -17,6 +17,6 @@ for(const audience of Object.keys(audienceContexts))test(`${audience} operationa
 test('alert filters and workflow handoff use shared entity and alert identifiers',async({page})=>{
   await page.goto(base+'alerts?entity=CUS-1004');
   const workflow=page.locator('.alertAction').first();await expect(workflow).toHaveAttribute('href',/entity=CUS-1004/);
-  await workflow.click();await expect(page.locator('.handoffBanner')).toContainText('Source alert');await expect(page.locator('.activeWorkGrid')).toContainText('BrightPath Dental Group');
+  await workflow.click();await expect(page.locator('.workflowCreationPreview')).toContainText('BrightPath Dental Group');await expect(page.locator('.workflowCreationPreview')).toContainText('PREVIEW · NOTHING SAVED YET');
   await page.goBack();await expect(page).toHaveURL(/alerts\?entity=CUS-1004/);
 });

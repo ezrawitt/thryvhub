@@ -9,7 +9,7 @@ for(const audience of Object.keys(audienceContexts))test(`${audience} specialist
   await page.goto(base+'dashboard');
   await expect(page.locator('.audiencePriorityGuide')).toHaveCount(0);
   await expect(page.locator('.prepareUpdate')).toHaveText(specialist.updateLabel);
-  await expect(page.locator('.productMetricSection').first()).toBeVisible();
+  await expect(page.locator('.compactProductContribution').first()).toBeVisible();
   await page.goto(base+'listings');
   await expect(page.locator('.listingsIntegration')).toHaveCount(1);
   await expect(page.locator('.specialistContext,.specialistWorkspace')).toHaveCount(0);

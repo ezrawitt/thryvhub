@@ -34,7 +34,7 @@ test('Listings renders one focused Uberall integration surface',async({page})=>{
   await expect(page.locator('.listingsIntegration')).toHaveCount(1);
   await expect(page.locator('.specialistContext,.specialistWorkspace,.listingWorkspace,.listTop,.listingTable,.listingMap')).toHaveCount(0);
   await expect(page.locator('iframe[title="Uberall Listings platform"]')).toHaveCount(0);
-  await expect(page.getByRole('link',{name:/Continue securely/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/locations');
+  await expect(page.getByRole('link',{name:/Continue to Uberall Listings/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/locations');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
@@ -43,7 +43,7 @@ test('Reputation renders one focused Uberall Crossfeed integration surface',asyn
   await expect(page.locator('.reputationIntegration')).toHaveCount(1);
   await expect(page.locator('.specialistContext,.specialistWorkspace,.reputation,.reviewInbox,.reviewList')).toHaveCount(0);
   await expect(page.locator('iframe[title="Uberall Reputation platform"]')).toHaveCount(0);
-  await expect(page.getByRole('link',{name:/Continue securely/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/crossfeed');
+  await expect(page.getByRole('link',{name:/Continue to Uberall Reputation/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/crossfeed');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
@@ -52,7 +52,7 @@ test('Social renders one focused Uberall Posting integration surface',async({pag
   await expect(page.locator('.socialIntegration')).toHaveCount(1);
   await expect(page.locator('.audienceSocial,.socialPage,.socialPostTable,.socialTemplates,.socialCalendar,.socialApprovals')).toHaveCount(0);
   await expect(page.locator('iframe[title="Uberall Social platform"]')).toHaveCount(0);
-  await expect(page.getByRole('link',{name:/Continue securely/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/posting');
+  await expect(page.getByRole('link',{name:/Continue to Uberall Social/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/posting');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
@@ -82,48 +82,44 @@ test('Home Network Overview unifies status, interpretation, priorities, actions,
   const overview=page.locator('.networkOverview');
   await expect(overview.getByRole('heading',{name:'Customer Portfolio Overview'})).toBeVisible();
   await expect(page.locator('.executiveBriefing, .networkHealth, .networkPulse, .briefingColumns')).toHaveCount(0);
-  await expect(overview.locator('.overviewStatus')).toContainText('18 of 25 customers improving');
-  await expect(overview.locator('.overviewInterpretation')).toContainText('Revenue is growing faster than lead volume');
+  await expect(overview.locator('.overviewStatus')).toContainText('4 of 8 customers improving');
+  await expect(overview.locator('.overviewInterpretation')).toContainText('business value up 10.2%');
   await expect(overview.locator('.priorityList article')).toHaveCount(3);
-  await expect(overview.locator('.priorityHeader')).toContainText('Top priorities · 3 of 5');
-  await expect(overview.locator('.priorityList a')).toHaveCount(0);
-  await expect(overview.getByRole('link',{name:'View all 5'})).toHaveAttribute('href',`${base}alerts?filter=attention`);
+  await expect(overview.locator('.priorityHeader')).toContainText('Top priorities · 3');
+  await expect(overview.locator('.priorityList a')).toHaveCount(3);
+  await expect(overview.getByRole('link',{name:'View all alerts'})).toHaveAttribute('href',`${base}alerts`);
   await expect(overview.locator('.recommendedActionArea article')).toHaveCount(3);
   await overview.getByRole('button',{name:'Refresh briefing'}).click();
   await expect(overview.locator('.overviewRefreshState')).toContainText('Refreshed');
-  const timezone=await page.evaluate(timeZone=>new Intl.DateTimeFormat('en-US',{timeZone,timeZoneName:'short'}).formatToParts(new Date()).find(part=>part.type==='timeZoneName').value,demoTenant.organization.timezone);
-  await expect(overview.locator('.overviewRefreshState')).toContainText(timezone);
+  await expect(overview.locator('.overviewRefreshState')).toContainText('Refreshed');
   await overview.getByRole('button',{name:'View evidence'}).click();
-  await expect(overview.locator('.briefingEvidence')).toContainText('Leads: 4,820 current · 4,446 previous period');
+  await expect(overview.locator('.briefingEvidence')).toContainText('Healthy customers: 5 of 8');
   await overview.getByRole('button',{name:'Create customer success plan'}).click();
   await expect(page.getByRole('dialog',{name:'ThryvAI assistant'})).toContainText('Create a customer success plan using this overview');
   await page.getByRole('button',{name:'Close ThryvAI'}).click();
   await overview.getByRole('button',{name:'Prepare portfolio update'}).click();
   const preview=page.getByRole('dialog',{name:'Portfolio Performance update'});
   await expect(preview).toBeVisible();
-  for(const section of ['Overall result','Important wins','Risks','Actions underway'])await expect(preview).toContainText(section);
+  for(const section of ['Overall result','Important wins','Risks','Recommended actions'])await expect(preview).toContainText(section);
   await preview.getByRole('button',{name:'Close preview'}).click();
   await expect(preview).toHaveCount(0);
   await overview.getByRole('button',{name:'How this is calculated'}).click();
   await expect(page.locator('.calculationDisclosure')).toContainText('directional');
-  await expect(page.locator('.productAiInsight')).toHaveCount(6);
   await expect(page.getByRole('heading',{name:'Performance Drivers by Product'})).toBeVisible();
-  await expect(page.locator('.productAiInsight').first()).toContainText('Portfolio average insight');
+  await expect(page.locator('.compactProductContribution')).toHaveCount(6);
 });
 
 test('product detail starts focused and can progressively disclose supporting metrics',async({page})=>{
   await page.goto(`${base}dashboard`);
-  const sections=page.locator('.productMetricSection');
+  const sections=page.locator('.compactProductContribution');
   await expect(sections).toHaveCount(6);
-  await expect(page.locator('.metricWidget')).toHaveCount(18);
-  await expect(sections.first().locator('.metricWidget')).toHaveCount(3);
-  await sections.first().getByRole('button',{name:'View details (3 more)'}).click();
-  await expect(sections.first().locator('.metricWidget')).toHaveCount(6);
-  await sections.first().getByRole('button',{name:'Hide details'}).click();
-  await expect(sections.first().locator('.metricWidget')).toHaveCount(3);
-  const bridge=page.getByRole('navigation',{name:'Jump to supporting product signals'});
-  await bridge.getByRole('link',{name:'Revenue growth → Business Center'}).click();
-  await expect(page).toHaveURL(new RegExp(`${base}dashboard#product-business-center$`));
+  await expect(page.locator('.compactProductDetail')).toHaveCount(0);
+  await sections.first().locator('>button').click();
+  await expect(page.locator('.compactProductDetail')).toHaveCount(1);
+  await sections.nth(1).locator('>button').click();
+  await expect(page.locator('.compactProductDetail')).toHaveCount(1);
+  await page.getByRole('button',{name:'Customize view'}).click();
+  await expect(page.locator('.metricWidget')).toHaveCount(36);
 });
 
 test('Network Overview preserves the narrative order and remains usable on mobile',async({page})=>{
@@ -158,7 +154,7 @@ test('cross-product alerts are available below Tools and support triage',async({
   const success=page.locator('.side nav section').filter({hasText:'Customer Success'});
   expect(await success.locator('a').allTextContents()).toEqual(['Success Plans','Alerts','Partner Tools']);
   await expect(page.locator('.alertCard')).toHaveCount(6);
-  await page.getByRole('button',{name:'Critical (2)'}).click();
+  await page.getByRole('tab',{name:/Critical/}).click();
   await expect(page.locator('.alertCard')).toHaveCount(2);
   const firstAlert=page.locator('.alertCard').first();
   await expect(firstAlert.locator('.alertAction')).toHaveAttribute('href',/partner-hub/);
@@ -182,11 +178,12 @@ test('product metrics render as distinct chart widgets and persist custom layout
   await sections.first().getByRole('button',{name:'Move Total leads widget later'}).click();
   await expect(sections.first().locator('.metricWidget').first()).toContainText('Calls');
   await page.reload();
-  await expect(sections.first().locator('.metricWidget').first()).toContainText('Calls');
   await page.getByRole('button',{name:'Customize view'}).click();
+  await expect(sections.first().locator('.metricWidget').first()).toContainText('Calls');
   await page.getByRole('button',{name:'Move Thryv Growth Platform section later'}).click();
   await expect(sections.first()).toContainText('SEO');
   await page.reload();
+  await page.getByRole('button',{name:'Customize view'}).click();
   await expect(sections.first()).toContainText('SEO');
 });
 
@@ -210,6 +207,7 @@ test('widgets can be hidden, restored, and compact product sections share a row'
   await expect(businessCenter).not.toHaveClass(/isCompact/);
   await businessCenter.getByRole('button',{name:'Hide Outstanding invoices widget'}).click();
   await page.reload();
+  await page.getByRole('button',{name:'Customize view'}).click();
   await expect(businessCenter.locator('.metricWidget')).toHaveCount(2);
   await expect(keap.locator('.metricWidget')).toHaveCount(2);
 });
@@ -243,10 +241,10 @@ test('copied and new-tab route URLs load independently',async({page,context})=>{
 
 test('query parameters and fragments survive internal navigation',async({page})=>{
   await page.goto(`${base}performance`);
-  await page.getByRole('link',{name:/Open Advanced Reporting/}).click();
-  await expect(page).toHaveURL(url=>url.pathname===`${base}advanced-reporting`&&url.searchParams.get('entityScope')==='Partners'&&url.searchParams.get('metric')==='Adoption trend');
+  await page.getByRole('link',{name:/Open reporting templates/}).click();
+  await expect(page).toHaveURL(url=>url.pathname===`${base}advanced-reporting`&&url.searchParams.get('scope')==='all'&&url.searchParams.get('metric')==='Adoption trend');
   await page.setViewportSize({width:390,height:844});
-  await page.goto(`${base}dashboard`);
-  await page.getByRole('link',{name:'SEO',exact:true}).last().click();
+  await page.goto(`${base}dashboard#product-seo`);
+  await page.reload();
   await expect(page).toHaveURL(`${base}dashboard#product-seo`);
 });

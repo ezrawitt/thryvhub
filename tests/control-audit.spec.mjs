@@ -17,14 +17,10 @@ test('every visible enabled button is identifiable and covered by the prototype 
   }
 });
 
-test('icon-only controls receive accessible names and feedback is keyboard-dismissible',async({page})=>{
+test('icon-only controls receive accessible names and the fixed reporting period is truthful',async({page})=>{
   await page.goto(base+'dashboard');
   const unnamed=await page.locator('button:visible').evaluateAll(buttons=>buttons.filter(button=>!button.getAttribute('aria-label')&&!button.title&&!/[\p{L}\p{N}]/u.test(button.textContent||'')).length);
   expect(unnamed).toBe(0);
-  await page.locator('.dateRangeButton').click();
-  const feedback=page.locator('.prototypeFeedback');
-  await expect(feedback).toBeVisible();
-  await expect(feedback).toContainText('Prototype action');
-  await page.keyboard.press('Escape');
-  await expect(feedback).toBeHidden();
+  await expect(page.locator('.dateRangeButton')).toContainText('Fixed demo period');
+  expect(await page.locator('.dateRangeButton').evaluate(element=>element.tagName)).toBe('SPAN');
 });

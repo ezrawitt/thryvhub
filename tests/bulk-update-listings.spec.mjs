@@ -8,11 +8,12 @@ test.beforeEach(async({page})=>{
 
 test('bulk in-app editor supports hierarchy, shared content, overrides, and managed review',async({page})=>{
   await page.addInitScript(()=>localStorage.setItem('thryvhub-demo-config',JSON.stringify({audience:'Agency',package:'All',products:['Thryv Growth Platform'],role:'Agency Director'})));
-  await page.goto(tools);await page.getByRole('button',{name:'Open tool →'}).click();
+  await page.goto(tools);await page.getByRole('button',{name:/Open Bulk Update Listings/}).click();
   const modal=page.getByRole('dialog',{name:'Bulk Update Listings'});
   await expect(modal).toContainText('Choose how to update location details in bulk.');
   await modal.getByRole('button',{name:/Open Editor/}).click();
-  await expect(modal).toContainText('Northstar Automotive CMR');
+  await expect(modal).toContainText('Northstar Digital Agency');
+  await expect(modal).toContainText('Client');
   await expect(modal).toContainText('No locations selected by default');
   const checks=modal.locator('.locationPicker input[type=checkbox]');for(let index=0;index<4;index++)await checks.nth(index).check();
   await expect(modal).toContainText('4 selected');
@@ -32,7 +33,7 @@ test('bulk in-app editor supports hierarchy, shared content, overrides, and mana
 
 test('spreadsheet flow validates, corrects, reviews, and exposes history',async({page})=>{
   await page.addInitScript(()=>localStorage.setItem('thryvhub-demo-config',JSON.stringify({audience:'Partners',package:'All',products:['Thryv Growth Platform'],role:'Partner Manager'})));
-  await page.goto(tools);await page.getByRole('button',{name:'Open tool →'}).click();
+  await page.goto(tools);await page.getByRole('button',{name:/Open Bulk Update Listings/}).click();
   const modal=page.getByRole('dialog',{name:'Bulk Update Listings'});
   await modal.getByRole('button',{name:/Upload Spreadsheet/}).click();
   await expect(modal.getByRole('button',{name:/Download blank template/})).toBeVisible();
@@ -45,7 +46,7 @@ test('spreadsheet flow validates, corrects, reviews, and exposes history',async(
   await expect(modal).toContainText('All rows can continue');
   await modal.getByRole('button',{name:/Continue with 842 valid rows/}).click();
   await expect(modal.getByRole('heading',{name:'Final review'})).toBeVisible();
-  await modal.getByRole('button',{name:'Publish Updates'}).click();
+  await modal.getByRole('button',{name:'Publish demo updates'}).click();
   await expect(modal).toContainText('Updates submitted for publishing');
   await modal.getByRole('button',{name:'File & Update History'}).click();
   await expect(modal).toContainText('Q3 hours update');

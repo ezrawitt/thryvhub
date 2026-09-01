@@ -20,6 +20,21 @@ const performanceByAudience={
 };
 export const getPerformance=audience=>performanceByAudience[audience]||performanceByAudience.Partners;
 
+const homeDimensions={
+  Partners:{Visibility:82,Reputation:88,Engagement:71,Conversion:76},
+  Agency:{Visibility:85,Reputation:87,Engagement:74,Conversion:79},
+  Franchise:{Visibility:84,Reputation:91,Engagement:68,Conversion:72},
+  Enterprise:{Visibility:80,Reputation:89,Engagement:73,Conversion:78}
+};
+const healthyStates=new Set(['Healthy','Performing well','Strong','Active','On track','Current']);
+export function getHomeOverview(audience){
+  const context=getAudienceContext(audience),entities=getEntities(audience),performance=getPerformance(audience),alerts=buildAlerts(audience).filter(item=>item.status!=='archived'),healthKey=audience==='Partners'?'accountHealth':audience==='Agency'?'clientHealth':audience==='Franchise'?'performanceHealth':'performance';
+  const improving=entities.filter(item=>healthyStates.has(item[healthKey])).length||Math.max(1,entities.length-alerts.filter(item=>item.severity==='critical').length);
+  const dimensions=homeDimensions[audience]||homeDimensions.Partners,score=Math.round(Object.values(dimensions).reduce((sum,value)=>sum+value,0)/4),severityOrder={critical:0,warning:1,activity:2},topPriorities=[...alerts].sort((a,b)=>severityOrder[a.severity]-severityOrder[b.severity]).slice(0,3);
+  const leadChange=audience==='Agency'?'9.1%':audience==='Partners'?'7.6%':audience==='Enterprise'?'6.8%':'8.4%',valueChange=audience==='Agency'?'12.6%':audience==='Partners'?'10.2%':audience==='Enterprise'?'14.1%':'18.4%';
+  return{context,entities,entityCount:entities.length,improving,score,status:score>=80?'Strong':score>=70?'Steady':'Needs attention',change:4,dimensions,performance,priorities:topPriorities,leadChange,valueChange,interpretation:`${context.organizationName} improved this period, with demand up ${leadChange} and business value up ${valueChange}. Gains are strongest among the best-performing ${context.managedEntityPlural}, while ${topPriorities.length} priority signals need attention. ${Object.entries(dimensions).sort((a,b)=>a[1]-b[1])[0][0]} is the broadest correctable constraint.`};
+}
+
 const products=['Growth Platform','Reputation','Listings','Social','Business Center','Keap'];
 export function buildAlerts(audience){
   const entities=getEntities(audience),ops=getOperationalContext(audience),context=getAudienceContext(audience);
