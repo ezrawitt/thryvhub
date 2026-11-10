@@ -17,8 +17,8 @@ for(const audience of Object.keys(audienceContexts))test(`${audience} specialist
   await expect(page.locator('.reputationIntegration')).toHaveCount(1);
   await expect(page.locator('.specialistContext,.specialistWorkspace')).toHaveCount(0);
   await page.goto(base+'advanced-reporting');
-  await expect(page.locator('.reportingWorkspace')).toContainText(context.organizationName);
-  await expect(page.locator('.reportSelector')).toContainText('Overview');
+  await expect(page.locator('.advanced-reportingIntegration')).toHaveCount(1);
+  await expect(page.locator('iframe[title="Advanced Reporting platform"]')).toHaveAttribute('src','https://reports.hub.thryv.com/');
 });
 
 test('specialist summaries remain usable without horizontal page overflow on mobile',async({page})=>{

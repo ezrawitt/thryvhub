@@ -1,17 +1,21 @@
-# Uberall Listings integration
+# Partner platform integrations
 
-The Partner Hub Brand Presence routes use explicit, product-specific integration modes:
+Thryv Hub embeds the partner-owned Listings and Advanced Reporting experiences from controlled `hub.thryv.com` subdomains:
 
-- `VITE_UBERALL_LISTINGS_EMBED_URL` and `VITE_UBERALL_LISTINGS_LAUNCH_URL`
-- `VITE_UBERALL_REPUTATION_EMBED_URL` and `VITE_UBERALL_REPUTATION_LAUNCH_URL`
-- `VITE_UBERALL_SOCIAL_EMBED_URL` and `VITE_UBERALL_SOCIAL_LAUNCH_URL`
+- Listings: `https://listings.hub.thryv.com/`
+- Advanced Reporting: `https://reports.hub.thryv.com/`
 
-An approved embed URL renders the framed integration. A launch URL renders the secure-launch handoff with the active organization and scope. If neither is configured, the route shows an explicit unavailable state.
+These are the production defaults. They can be overridden per environment with:
 
-Only HTTPS URLs are accepted. Do not include credentials, tokens, or private tenant identifiers in these values.
+- `VITE_LISTINGS_EMBED_URL` and `VITE_LISTINGS_LAUNCH_URL`
+- `VITE_REPORTS_EMBED_URL` and `VITE_REPORTS_LAUNCH_URL`
 
-## Framing requirement
+The older `VITE_UBERALL_LISTINGS_*` variables remain supported as a compatibility fallback. Reputation and Social retain their existing Uberall launch variables.
 
-The configured Listings, Crossfeed, and Posting URLs redirect unauthenticated sessions to Uberall login. Those responses currently include `X-Frame-Options: SAMEORIGIN`, so Chrome cannot display them inside the GitHub Pages origin. Uberall must provide a supported embedding method or configure an approved URL whose `Content-Security-Policy` `frame-ancestors` directive permits the Partner Hub origin.
+Only HTTPS URLs are accepted. Credentials, reusable tokens, and private tenant identifiers must not be placed in build-time URLs.
 
-Until that configuration is available, the route intentionally displays the focused integration fallback rather than attempting to bypass Uberall's security headers.
+## Framing requirements
+
+Each embedded application must allow its Thryv Hub parent origin with a `Content-Security-Policy` `frame-ancestors` directive. During the GitHub Pages prototype, that means allowing `https://ezrawitt.github.io`; in the hosted environment, allow the exact `https://hub.thryv.com` origin. Do not send a conflicting `X-Frame-Options: DENY` or `SAMEORIGIN` header.
+
+Authentication cookies must also be compatible with the embedding context. The Hub always keeps an accessible **Open in new tab** fallback visible in case authentication or browser policy prevents the frame from loading.

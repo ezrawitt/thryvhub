@@ -6,7 +6,7 @@ test.beforeEach(async({page})=>page.addInitScript(()=>sessionStorage.setItem('th
 for(const audience of Object.keys(audienceContexts))test(`${audience} operational pages use the selected context`,async({page})=>{
   const context=audienceContexts[audience],ops=operationalContexts[audience];
   await page.addInitScript(value=>localStorage.setItem('thryvhub-demo-audience',value),audience);
-  await page.goto(base+'network');await expect(page.locator('h1')).toHaveText(ops.entityTitle);await expect(page.locator('thead')).toContainText(ops.fields[0]);
+  await page.goto(base+'network');await expect(page.locator('h1')).toContainText(ops.entityTitle);await expect(page.locator('h1')).toContainText('(8)');await expect(page.locator('thead')).toContainText(ops.fields[0]);
   await page.goto(base+'alerts');await expect(page.locator('.alertList')).toContainText(ops.alerts[0]);
   await page.goto(base+'tasks');await expect(page.locator('h1')).toHaveText(ops.workTitle);await expect(page.locator('.activeWorkGrid')).toContainText('Success measure');
   await page.goto(base+'tools');await expect(page.locator('h1')).toHaveText(ops.toolsTitle);await expect(page.locator('.resourceGrid')).toContainText(ops.tools[0]);

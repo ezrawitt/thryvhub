@@ -29,12 +29,20 @@ test('all rendered application links retain the deployment base',async({page})=>
   for(const href of hrefs)expect(href).toMatch(/^\/thryvhub\/partner-hub\//);
 });
 
-test('Listings renders one focused Uberall integration surface',async({page})=>{
+test('Listings embeds the controlled Thryv Listings subdomain',async({page})=>{
   await page.goto(`${base}listings`);
   await expect(page.locator('.listingsIntegration')).toHaveCount(1);
   await expect(page.locator('.specialistContext,.specialistWorkspace,.listingWorkspace,.listTop,.listingTable,.listingMap')).toHaveCount(0);
-  await expect(page.locator('iframe[title="Uberall Listings platform"]')).toHaveCount(0);
-  await expect(page.getByRole('link',{name:/Continue to Uberall Listings/})).toHaveAttribute('href','https://uberall.com/en/app/thryv/locations');
+  await expect(page.locator('iframe[title="Listings platform"]')).toHaveAttribute('src','https://listings.hub.thryv.com/');
+  await expect(page.getByRole('link',{name:'Open Listings in a new tab'})).toHaveAttribute('href','https://listings.hub.thryv.com/');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
+});
+
+test('Advanced Reporting embeds the controlled Thryv Reports subdomain',async({page})=>{
+  await page.goto(`${base}advanced-reporting`);
+  await expect(page.locator('.advanced-reportingIntegration')).toHaveCount(1);
+  await expect(page.locator('iframe[title="Advanced Reporting platform"]')).toHaveAttribute('src','https://reports.hub.thryv.com/');
+  await expect(page.getByRole('link',{name:'Open Advanced Reporting in a new tab'})).toHaveAttribute('href','https://reports.hub.thryv.com/');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true);
 });
 
